@@ -33,7 +33,7 @@ export function VideoInfo() {
           <Badge variant="outline">#animation</Badge>
         </div>
         <p className={`text-sm ${isDescriptionExpanded ? '' : 'line-clamp-2'}`}>
-          Big Buck Bunny tells the story of a giant rabbit with a heart bigger than himself. When one sunny day three rodents rudely harass him, something snaps... and the rabbit ain't no bunny anymore! In the typical cartoon tradition he prepares the nasty rodents a comical revenge.
+          Big Buck Bunny tells the story of a giant rabbit with a heart bigger than himself. When one sunny day three rodents rudely harass him, something snaps... and the rabbit ain&apos;t no bunny anymore! In the typical cartoon tradition he prepares the nasty rodents a comical revenge.
         </p>
         <Button 
           variant="link" 
