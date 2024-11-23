@@ -11,6 +11,7 @@ export function VideoPlayer() {
   const [duration, setDuration] = useState(0)
   const [volume, setVolume] = useState(1)
   const [isFullScreen, setIsFullScreen] = useState(false)
+  const [isControlsVisible, setIsControlsVisible] = useState(true);
   const videoRef = useRef(null)
   const containerRef = useRef(null)
 
@@ -21,6 +22,14 @@ export function VideoPlayer() {
       video.addEventListener('loadedmetadata', updateDuration);
       return () => video.removeEventListener('loadedmetadata', updateDuration);
     }
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsControlsVisible(false);
+    }, 20000);
+
+    return () => clearTimeout(timer);
   }, []);
 
   const togglePlay = () => {
@@ -71,8 +80,16 @@ export function VideoPlayer() {
     }
   }
 
+  const handleMouseEnter = () => setIsControlsVisible(true);
+  const handleMouseLeave = () => setIsControlsVisible(false);
+
   return (
-    <div ref={containerRef} className="relative aspect-video rounded-lg overflow-hidden bg-black">
+    <div 
+      ref={containerRef} 
+      className="relative aspect-video rounded-lg overflow-hidden bg-black"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       <video
         ref={videoRef}
         className="w-full h-full"
@@ -82,7 +99,7 @@ export function VideoPlayer() {
       >
         Your browser does not support the video tag.
       </video>
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+      <div className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 transition-opacity duration-300 ${isControlsVisible ? 'opacity-100' : 'opacity-0'}`}>
         <Slider
           value={[currentTime]}
           max={duration}
@@ -105,7 +122,7 @@ export function VideoPlayer() {
               {formatTime(currentTime)} / {formatTime(duration)}
             </span>
           </div>
-          <div className="items-center space-x-2 md:flex hidden">
+          <div className="flex items-center space-x-2">
             <Button variant="ghost" size="icon" onClick={() => handleVolumeChange([volume === 0 ? 1 : 0])}>
               {volume === 0 ? <VolumeX className="h-6 w-6" /> : <Volume2 className="h-6 w-6" />}
             </Button>
