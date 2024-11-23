@@ -44,7 +44,7 @@ export default function Page() {
   
         fetchVideoDetails();
       }
-    }, [videoId]); 
+    }, []); 
 
 
   return (
