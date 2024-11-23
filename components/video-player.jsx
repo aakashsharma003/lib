@@ -5,7 +5,9 @@ import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
 import { Play, Pause, Volume2, VolumeX, Maximize, Minimize, SkipBack, SkipForward } from 'lucide-react'
 
-export function VideoPlayer() {
+export function VideoPlayer({videoId}) {
+  
+  console.log("id",videoId)
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -31,6 +33,7 @@ export function VideoPlayer() {
 
     return () => clearTimeout(timer);
   }, []);
+
 
   const togglePlay = () => {
     if (videoRef.current) {
@@ -95,7 +98,8 @@ export function VideoPlayer() {
         className="w-full h-full"
         onTimeUpdate={handleTimeUpdate}
         poster="/placeholder.svg?height=720&width=1280"
-        src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+        // src={`https://www.youtube.com/embed/<${videoId}>`}
+        src={"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"}
       >
         Your browser does not support the video tag.
       </video>
