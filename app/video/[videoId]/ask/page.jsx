@@ -6,9 +6,15 @@ import { Input } from "@/components/ui/input";
 import { ArrowLeft, Copy, Save, User, Bot } from "lucide-react";
 import Link from "next/link";
 import axios from "axios";
-import { useParams } from "next/navigation";
+import { useAuth } from '@clerk/nextjs';
+import { useParams, redirect } from "next/navigation";
 
 export default function VideoSummaryPage() {
+  const { userId } = useAuth();
+  
+  if (!userId) {
+    redirect("/sign-in");
+  }
   const { videoId } = useParams(); 
   const [messages, setMessages] = useState([
     {

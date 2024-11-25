@@ -3,10 +3,11 @@ import Link from "next/link"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Menu, Search, Bell, User, Library } from 'lucide-react'
-import { useEffect, useState } from "react"
-import axios from "axios"
+import { useState } from "react"
+import { useAuth,SignInButton } from "@clerk/nextjs";
 
 export function Header() {
+   const { userId } = useAuth();
   const [query, setquery] = useState("premanandji");
   //  const getVideos = async() => {
   //   const apiKey = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY; // Our YouTube API key
@@ -51,24 +52,30 @@ export function Header() {
               type="search"
               placeholder="Search videos..."
               className="w-full"
-               onChange={(e) => {setquery(e.target.value)}}
+              onChange={(e) => {
+                setquery(e.target.value);
+              }}
             />
             <Button type="submit" size="icon" className="ml-2">
               <Search className="h-4 w-4" />
             </Button>
           </form>
         </div>
-        <div className="flex items-center space-x-4">
-          <Button variant="ghost" size="icon">
-            <Bell className="h-5 w-5" />
-          </Button>
-          <Button variant="ghost" size="icon">
-            <User className="h-5 w-5" />
-          </Button>
-        </div>
+        {userId ? (
+          <div className="flex items-center space-x-4">
+            <Button variant="ghost" size="icon">
+              <Bell className="h-5 w-5" />
+            </Button>
+            <Button variant="ghost" size="icon">
+              <User className="h-5 w-5" />
+            </Button>
+          </div>
+        ) : (
+          <SignInButton className="bg-black text-white rounded-xl md:rounded-2xl px-6 py-3 border-2 md:px-3 md:py-2 border-black hover:bg-gray-800 transition-all duration-300 ease-in-out shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black" />
+        )}
       </div>
     </header>
-  )
+  );
 }
 
 

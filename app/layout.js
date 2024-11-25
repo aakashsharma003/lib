@@ -1,26 +1,35 @@
-import { Header } from '@/components/header'
-import './globals.css'
-import { Inter } from 'next/font/google'
+import {
+  ClerkProvider,
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
+import { Header } from "@/components/header";
+import "./globals.css";
+import { Inter } from "next/font/google";
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: 'YouTube-like Media Player',
-  description: 'A modern media player application built with Next.js and shadcn/ui',
-}
+  title: "library",
+  description:
+    "A collaborative learning platform to filter, share, and engage with educational YouTube content.",
+};
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-       <Header/>
-        <div className="min-h-screen bg-background font-sans antialiased">
-          <div className="relative flex min-h-screen flex-col">
-            <div className="flex-1">{children}</div>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={inter.className}>
+          <Header />
+          <div className="min-h-screen bg-background font-sans antialiased">
+            <div className="relative flex min-h-screen flex-col">
+              <div className="flex-1">{children}</div>
+            </div>
           </div>
-        </div>
-      </body>
-    </html>
-  )
+        </body>
+      </html>
+    </ClerkProvider>
+  );
 }
-
