@@ -6,35 +6,32 @@ import { Menu, Search, Bell, User, Library } from 'lucide-react'
 import { useEffect, useState } from "react"
 import axios from "axios"
 
-export function Header({updateData}) {
+export function Header() {
   const [query, setquery] = useState("premanandji");
-  useEffect(() => {
-    getVideos();
-  }, []);
-   const getVideos = async() => {
-    const apiKey = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY; // Our YouTube API key
-    const apiURL = process.env.NEXT_PUBLIC_YOUTUBE_API_URL;  // Base URL for YouTube API
+  //  const getVideos = async() => {
+  //   const apiKey = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY; // Our YouTube API key
+  //   const apiURL = process.env.NEXT_PUBLIC_YOUTUBE_API_URL;  // Base URL for YouTube API
 
-    try {
-      // Call the YouTube API using axios
-      const response = await axios.get(`${apiURL}/search?part=snippet&key=${apiKey}&type=video&q=${query}`);
+  //   try {
+  //     // Call the YouTube API using axios
+  //     const response = await axios.get(`${apiURL}/search?part=snippet&key=${apiKey}&type=video&q=${query}`);
 
-      // Check if response is valid
-      if (response.status === 200) {
-        console.log("data", response?.data);
-        updateData(response?.data?.items);  // Store fetched videos in state
-      } else {
-        throw new Error('Failed to fetch videos');
-      }
-    } catch (err) {
-      // setError('An error occurred while fetching videos');
-      console.log(err); // Log the error
-    }
-  }
+  //     // Check if response is valid
+  //     if (response.status === 200) {
+  //       console.log("data", response?.data);
+  //       updateData(response?.data?.items);  // Store fetched videos in state
+  //     } else {
+  //       throw new Error('Failed to fetch videos');
+  //     }
+  //   } catch (err) {
+  //     // setError('An error occurred while fetching videos');
+  //     console.log(err); // Log the error
+  //   }
+  // }
   const handleSearch = async (e) => {
     e.preventDefault(); // Prevent form from reloading the page
 
-   getVideos()
+  //  getVideos()
   };
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-sm text-foreground">

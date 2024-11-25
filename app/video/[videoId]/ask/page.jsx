@@ -1,13 +1,15 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { ArrowLeft, Copy, Save, User, Bot } from "lucide-react";
-import Link from "next/link"
-import axios from "axios"
+import Link from "next/link";
+import axios from "axios";
+import { useParams } from "next/navigation";
 
 export default function VideoSummaryPage() {
+  const { videoId } = useParams(); 
   const [messages, setMessages] = useState([
     {
       text: "Hello! I'm here to help you with any questions you have about the video you just watched. What would you like to know?",
@@ -27,7 +29,7 @@ export default function VideoSummaryPage() {
     setMessages((prev) => [...prev, { text: inputValue, isUser: true }]);
     try {
       const response = await axios.post(`/api/ask`, {
-        videoId: "009FHqBo87Q",
+        videoId: videoId,
         question: inputValue,
       });
       // console.log("response m kya aya",response.data);
@@ -176,4 +178,3 @@ export default function VideoSummaryPage() {
     </div>
   );
 }
-
