@@ -1,6 +1,6 @@
  import { VideoFeed } from "@/components/video-feed"
 import axios from "axios";
-import {cache} from "react"
+import {cache} from "react";
 
 
 const fetchVideos = cache(async(query) => {
