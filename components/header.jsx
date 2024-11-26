@@ -1,52 +1,26 @@
-'use client'
-import Link from "next/link"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Menu, Search, Bell, User, Library } from 'lucide-react'
-import { useState,  useCallback  } from "react"
-import { useAuth,SignInButton } from "@clerk/nextjs";
-import { useRouter,  useSearchParams } from "next/navigation"
+"use client";
+
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Bell, User, Library } from "lucide-react";
+import { useAuth, SignInButton } from "@clerk/nextjs";
+import { SearchForm } from "./search-form";
+
 
 export function Header() {
-  const router = useRouter();
-   const { userId } = useAuth();
-    const searchParams = useSearchParams();
-  const [searchTerm, setSearchTerm] = useState("");
-  const handleSearch = useCallback(
-    (e) => {
-      e.preventDefault();
-      const params = new URLSearchParams(searchParams);
-      searchTerm ? params.set("search", searchTerm) : params.delete("search");
-      router.push(`/?${params.toString()}`);
-    },
-    [searchTerm, searchParams, router]
-  );
+  const { userId } = useAuth();
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-sm text-foreground">
       <div className="container flex h-16 items-center justify-between px-4">
-        <div className="flex items-center justify-around ">
-          {/* <Button variant="ghost" size="icon" className="mr-2">
-            <Menu className="h-6 w-6" />
-          </Button> */}
+        <div className="flex items-center justify-around">
           <Link href="/" className="flex items-center space-x-2">
             <Library className="h-6 w-6" />
             <span className="font-bold text-xl">Library</span>
           </Link>
         </div>
         <div className="flex-1 mx-4 max-w-xl">
-          <form className="flex items-center" onSubmit={handleSearch}>
-            <Input
-              type="search"
-              placeholder="Search videos..."
-              className="w-full"
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-              }}
-            />
-            <Button type="submit" size="icon" className="ml-2">
-              <Search className="h-4 w-4" />
-            </Button>
-          </form>
+          <SearchForm />
         </div>
         {userId ? (
           <div className="flex items-center space-x-4">
@@ -64,9 +38,3 @@ export function Header() {
     </header>
   );
 }
-
-
-
-
-
-

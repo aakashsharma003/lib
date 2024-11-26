@@ -2,7 +2,7 @@
 import { fetchVideos } from "./utils/youtube";
 import { Suspense } from "react";
 export default async function HomePage({ searchParams }) {
-  const searchQuery = searchParams?.search || "operating system";
+  const searchQuery = await searchParams?.search || "operating system";
   const videos = await fetchVideos(searchQuery);
   return (
     <div className="min-h-screen flex flex-col">
