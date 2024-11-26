@@ -3,37 +3,24 @@ import Link from "next/link"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Menu, Search, Bell, User, Library } from 'lucide-react'
-import { useState } from "react"
+import { useState,  useCallback  } from "react"
 import { useAuth,SignInButton } from "@clerk/nextjs";
+import { useRouter,  useSearchParams } from "next/navigation"
 
 export function Header() {
+  const router = useRouter();
    const { userId } = useAuth();
-  const [query, setquery] = useState("premanandji");
-  //  const getVideos = async() => {
-  //   const apiKey = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY; // Our YouTube API key
-  //   const apiURL = process.env.NEXT_PUBLIC_YOUTUBE_API_URL;  // Base URL for YouTube API
-
-  //   try {
-  //     // Call the YouTube API using axios
-  //     const response = await axios.get(`${apiURL}/search?part=snippet&key=${apiKey}&type=video&q=${query}`);
-
-  //     // Check if response is valid
-  //     if (response.status === 200) {
-  //       console.log("data", response?.data);
-  //       updateData(response?.data?.items);  // Store fetched videos in state
-  //     } else {
-  //       throw new Error('Failed to fetch videos');
-  //     }
-  //   } catch (err) {
-  //     // setError('An error occurred while fetching videos');
-  //     console.log(err); // Log the error
-  //   }
-  // }
-  const handleSearch = async (e) => {
-    e.preventDefault(); // Prevent form from reloading the page
-
-  //  getVideos()
-  };
+    const searchParams = useSearchParams();
+  const [searchTerm, setSearchTerm] = useState("");
+  const handleSearch = useCallback(
+    (e) => {
+      e.preventDefault();
+      const params = new URLSearchParams(searchParams);
+      searchTerm ? params.set("search", searchTerm) : params.delete("search");
+      router.push(`/?${params.toString()}`);
+    },
+    [searchTerm, searchParams, router]
+  );
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-sm text-foreground">
       <div className="container flex h-16 items-center justify-between px-4">
@@ -53,7 +40,7 @@ export function Header() {
               placeholder="Search videos..."
               className="w-full"
               onChange={(e) => {
-                setquery(e.target.value);
+                setSearchTerm(e.target.value);
               }}
             />
             <Button type="submit" size="icon" className="ml-2">

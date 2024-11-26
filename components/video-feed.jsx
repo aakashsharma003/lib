@@ -1,12 +1,30 @@
-import Image from "next/image"
-import Link from "next/link"
+"use client";
 
-export function VideoFeed({videos}) {
-  // console.log("Videos received in VideoFeed:", videos);
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { fetchVideos } from "@/app/utils/youtube";
+
+export function VideoFeed({ initialVideos, searchQuery }) {
+  const [videos, setVideos] = useState(initialVideos);
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const currentSearchQuery = searchParams.get("search") || searchQuery;
+    if (currentSearchQuery !== searchQuery) {
+      fetchVideos(currentSearchQuery).then(setVideos);
+    }
+  }, [searchParams, searchQuery]);
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
       {videos?.map((video) => (
-        <Link key={video?.id?.videoId} href={`/video/${video.id.videoId}`} className="group">
+        <Link
+          key={video?.id?.videoId}
+          href={`/video/${video.id.videoId}`}
+          className="group"
+        >
           <div className="relative aspect-video mb-2">
             <Image
               src={video?.snippet?.thumbnails?.medium?.url}
@@ -15,20 +33,15 @@ export function VideoFeed({videos}) {
               objectFit="cover"
               className="rounded-lg"
             />
-            <div className="absolute bottom-1 right-1 bg-black bg-opacity-70 text-white text-xs px-1 rounded">
-              {video?.duration} 
-            </div>
           </div>
           <h3 className="font-semibold line-clamp-2 group-hover:text-blue-500 transition-colors">
             {video?.snippet?.title}
           </h3>
-          <p className="text-sm text-gray-500">{video.channel}</p>
           <p className="text-sm text-gray-500">
-            {video.views} • {video.timestamp}
+            {video?.snippet?.channelTitle}
           </p>
         </Link>
       ))}
     </div>
-  )
+  );
 }
-
