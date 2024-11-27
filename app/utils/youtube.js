@@ -29,5 +29,6 @@ export const fetchVideos = cache(async (query) => {
 });
 export async function getYoutubeTranscript(videoId) {
   const transcript = await YoutubeTranscript.fetchTranscript(videoId);
+  console.log("transcript", transcript);
   return formatTranscript(transcript);
 }
