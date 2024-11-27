@@ -48,7 +48,7 @@ Follow these steps to set up the project locally:
 
 1. **Clone the Repository**  
    ```bash
-   git clone https://github.com/aakashsharma003/library.git
+   git clone https://github.com/aakashsharma003/lib.git
    cd library
 2. Install Dependencies
 
