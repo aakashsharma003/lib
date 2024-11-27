@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Library - Collaborative Learning Platform  
 
-## Getting Started
+A modern collaborative learning platform designed to enhance learning efficiency and foster community-driven knowledge sharing. Library integrates YouTube content to provide contextually filtered insights, real-time doubt resolution, and quick revision tools, creating a focused and productive environment for learners.  
 
-First, run the development server:
+---
+
+## 🚀 Features  
+
+### 1. **YouTube Content Integration**  
+- Seamless integration with YouTube to bring video content directly to the platform.  
+- Contextually filtered insights to keep learning focused.  
+
+### 2. **User-Generated Notes**  
+- Attach and share notes to videos.  
+- Upvoting system for quality content to highlight the most useful notes.  
+
+### 3. **Quick Revision Tools**  
+- AI-powered suggestions for concise summaries and tips related to the topic.  
+- Save time by revising key points instead of watching entire videos.  
+
+### 4. **Real-Time Doubt Resolution**  
+- Filtered comment sections for relevant discussions and doubt resolution.  
+- Foster collaborative learning with community-driven answers.  
+
+### 5. **Intelligent Filtering System**  
+- Block distractions and entertainment content during focused learning sessions.  
+- Enable a distraction-free learning environment.  
+
+### 6. **Future-Ready Enhancements**  
+- Plans to integrate Google Search for multi-platform content.  
+- AI models for topic predictions and learning insights with 90% accuracy.  
+
+---
+
+## 🛠️ Technologies Used  
+
+- **Frontend**: React.js, Tailwind CSS  
+- **Backend**: Node.js, Prisma ORM, MongoDB  
+- **APIs**: YouTube Data API  
+- **Real-Time Communication**: Socket.io  
+- **AI Tools**: TensorFlow for prediction and filtering models  
+
+---
+
+## 📦 Installation and Setup  
+
+Follow these steps to set up the project locally:  
+
+1. **Clone the Repository**  
+   ```bash
+   git clone https://github.com/aakashsharma003/library.git
+   cd library
+2. Install Dependencies
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+   npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Set Up Environment Variables
+   Create a .env file in the root directory and add the following:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+   env
+   NEXT_PUBLIC_YOUTUBE_API_KEY=your_youtube_api_key
+   NEXT_PUBLIC_YOUTUBE_API_URL=your_youtube_api_url
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+   CLERK_SECRET_KEY=
+   NEXT_PUBLIC_GEMINI_API_KEY
+   YOUTUBE_API_KEY
+   Start the Development Server
+```
+4. Start the project locally!
+```bash
+   npm run dev
+```
+   Open in Browser
+   Visit http://localhost:3000 in your browser to access the application.
