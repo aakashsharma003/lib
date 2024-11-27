@@ -28,7 +28,13 @@ export const fetchVideos = cache(async (query) => {
   }
 });
 export async function getYoutubeTranscript(videoId) {
+  try{
   const transcript = await YoutubeTranscript.fetchTranscript(videoId);
-  console.log("transcript", transcript);
-  return formatTranscript(transcript);
+     console.log("transcript", transcript);
+    return formatTranscript(transcript);
+  }
+  catch(err){
+   console.log("error occured at transcript", err);
+   return "Hey there i am akash sharma from mbm university a passionate open source contributer from india!";
+  }
 }
