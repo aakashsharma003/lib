@@ -81,14 +81,14 @@ export default function VideoSummaryPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+     {/* <header className="sticky top-0 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-14 items-center">
           <Link href="/" className="flex items-center space-x-2">
             <ArrowLeft className="h-4 w-4" />
             <span>Back</span>
           </Link>
         </div>
-      </header>
+      </header>  */}
       <div className="container py-6">
         <div className="mx-auto max-w-2xl">
           <div className="space-y-4 pb-[100px]">
