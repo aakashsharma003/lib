@@ -46,10 +46,10 @@ User's question:
 [${question}]
 `;
     const answer = await askOpenAI(prompt, question);
-    //  console.log("answer by gemini", answer);
+     console.log("answer by gemini", answer);
     return NextResponse.json({ answer });
   } catch (error) {
-    console.error("Error in API route:", error);
+    console.log("Error in API route:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
