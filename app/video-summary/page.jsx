@@ -67,7 +67,6 @@ export default function VideoSummaryPage() {
   };
 
   const saveMessage = (text) => {
-    // Implement save functionality here
     // console.log("Saving message:", text);
   };
 
