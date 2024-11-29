@@ -6,7 +6,7 @@ import { getYoutubeTranscript } from "@/app/utils/youtube";
 
 export async function POST(req) {
   try {
-    const { videoId, question } = await req.json();
+    const { videoId, question, transcrpt } = await req.json();
 
     if (!videoId || !question) {
       return NextResponse.json(
@@ -15,8 +15,8 @@ export async function POST(req) {
       );
     }
 
-    const transcript = await getYoutubeTranscript(videoId);
-    console.log("transcript", transcript);
+    // const transcript = await getYoutubeTranscript(videoId);
+    // console.log("transcript", transcript);
     const prompt = `You are an AI assistant with extensive knowledge of YouTube content. You have been trained on a vast dataset encompassing millions of YouTube videos across various topics. Your primary function is to answer questions about specific videos and provide insights based on your broad understanding of YouTube content.
 
    When answering questions:
@@ -40,7 +40,7 @@ export async function POST(req) {
 Remember, your responses should seamlessly blend specific video knowledge with broader YouTube insights, creating a cohesive and knowledgeable persona. Always refer to the video content directly, as if you've watched and analyzed it, rather than mentioning any behind-the-scenes processes or data sources.
 
 Here is the video content:
-[${transcript}]
+[${transcrpt}]
 
 User's question:
 [${question}]

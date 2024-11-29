@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Copy, Save, User, Bot } from "lucide-react";
@@ -11,20 +11,38 @@ import { useParams, redirect } from "next/navigation";
 
 export default function VideoSummaryPage() {
   const { userId } = useAuth();
-  
   if (!userId) {
     redirect("/sign-in");
   }
   const { videoId } = useParams(); 
+  const [transcript, setTranscript] = useState("");
   const [messages, setMessages] = useState([
     {
       text: "Hello! I'm here to help you with any questions you have about the video you just watched. What would you like to know?",
       isUser: false,
     },
   ]);
+  
   const [isStreamingResponse, setStreamingResponse] = useState(false);
-  const [inputValue, setInputValue] = useState("");
-
+   const [isLoadingTranscript, setLoadingTranscript] = useState(false);
+  const [inputValue, setInputValue] = useState(null);
+    useEffect(() => {
+       async function getTranscript(){
+        setLoadingTranscript(true);
+        try{
+          const response = await axios.get(
+            `/api/transcript?videoId=${videoId}`
+          );
+          setTranscript(response.data);
+        }catch(error){
+          console.log("error",error);
+        }finally{
+          setLoadingTranscript(false);
+        }
+         
+       }
+       getTranscript();
+    }, [videoId]);
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStreamingResponse(true);
@@ -37,6 +55,7 @@ export default function VideoSummaryPage() {
       const response = await axios.post(`/api/ask`, {
         videoId: videoId,
         question: inputValue,
+        transcrpt:transcript
       });
       // console.log("response m kya aya",response.data);
       // Check if the response status is not OK

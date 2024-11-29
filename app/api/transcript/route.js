@@ -1,20 +1,26 @@
-import { fetchTranscript } from "youtube-transcript";
+"use server";
+import { getYoutubeTranscript } from "@/app/utils/youtube";
+import { NextResponse } from "next/server";
 
-export default async function handler(req, res) {
-  const { videoId } = req.query; // videoId is passed as query param
+export async function GET(request) {
+   const { searchParams } = new URL(request.url); 
+   const videoId = searchParams.get("videoId");
 
-  if (!videoId) {
-    return res.status(400).json({ error: "Video ID is required" });
-  }
+   if (!videoId) {
+     return NextResponse.json(
+       { error: "Video ID is required" },
+       { status: 400 }
+     );
+   }
 
-  try {
-    // Fetch transcript using youtube-transcript
-    const transcript = await fetchTranscript(videoId);
-
-    // Respond with the transcript data
-    res.status(200).json(transcript);
-  } catch (error) {
-    console.error("Error fetching transcript:", error);
-    res.status(500).json({ error: "Failed to fetch transcript" });
-  }
+   try {
+     const transcript = await getYoutubeTranscript(videoId);
+     return NextResponse.json(transcript, { status: 200 });
+   } catch (error) {
+     console.error("Error fetching transcript:", error);
+     return NextResponse.json(
+       { error: "Failed to fetch transcript" },
+       { status: 500 }
+     );
+   }
 }
