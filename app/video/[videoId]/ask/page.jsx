@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Copy, Save, User, Bot } from "lucide-react";
+import { ArrowLeft, Copy, Save, User, Bot, Loader2 } from "lucide-react";
 import Link from "next/link";
 import axios from "axios";
-import { useAuth } from '@clerk/nextjs';
+import { useAuth } from "@clerk/nextjs";
 import { useParams, redirect } from "next/navigation";
 
 export default function VideoSummaryPage() {
@@ -14,7 +14,7 @@ export default function VideoSummaryPage() {
   if (!userId) {
     redirect("/sign-in");
   }
-  const { videoId } = useParams(); 
+  const { videoId } = useParams();
   const [transcript, setTranscript] = useState("");
   const [messages, setMessages] = useState([
     {
@@ -22,43 +22,39 @@ export default function VideoSummaryPage() {
       isUser: false,
     },
   ]);
-  
+
   const [isStreamingResponse, setStreamingResponse] = useState(false);
-   const [isLoadingTranscript, setLoadingTranscript] = useState(false);
-  const [inputValue, setInputValue] = useState(null);
-    useEffect(() => {
-       async function getTranscript(){
-        setLoadingTranscript(true);
-        try{
-          const response = await axios.get(
-            `/api/transcript?videoId=${videoId}`
-          );
-          setTranscript(response.data);
-        }catch(error){
-          console.log("error",error);
-        }finally{
-          setLoadingTranscript(false);
-        }
-         
-       }
-       getTranscript();
-    }, [videoId]);
+  const [isLoadingTranscript, setLoadingTranscript] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+
+  useEffect(() => {
+    async function getTranscript() {
+      setLoadingTranscript(true);
+      try {
+        const response = await axios.get(`/api/transcript?videoId=${videoId}`);
+        setTranscript(response.data);
+      } catch (error) {
+        console.log("error", error);
+      } finally {
+        setLoadingTranscript(false);
+      }
+    }
+    getTranscript();
+  }, [videoId]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setStreamingResponse(true);
-    //  console.log("input value", inputValue)
     if (!inputValue.trim()) return;
+    setStreamingResponse(true);
 
-    // Add user message
     setMessages((prev) => [...prev, { text: inputValue, isUser: true }]);
     try {
       const response = await axios.post(`/api/ask`, {
         videoId: videoId,
         question: inputValue,
-        transcrpt:transcript
+        transcript: transcript,
       });
-      // console.log("response m kya aya",response.data);
-      // Check if the response status is not OK
+
       if (response.status !== 200) {
         setTimeout(() => {
           setMessages((prev) => [
@@ -71,7 +67,7 @@ export default function VideoSummaryPage() {
         }, 1000);
         return;
       }
-      // Simulate AI response
+
       setTimeout(() => {
         setMessages((prev) => [
           ...prev,
@@ -94,22 +90,19 @@ export default function VideoSummaryPage() {
   };
 
   const saveMessage = (text) => {
-    // Implement save functionality here
-    // console.log("Saving message:", text);
+    // lets Implement save functionality here
   };
 
   return (
     <div className="min-h-screen bg-background">
-     {/* <header className="sticky top-0 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 items-center">
-          <Link href="/" className="flex items-center space-x-2">
-            <ArrowLeft className="h-4 w-4" />
-            <span>Back</span>
-          </Link>
-        </div>
-      </header>  */}
       <div className="container py-6">
         <div className="mx-auto max-w-2xl">
+          {isLoadingTranscript && (
+            <div className="flex justify-center items-center h-20">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <span className="ml-2 text-lg">Loading transcript...</span>
+            </div>
+          )}
           <div className="space-y-4 pb-[100px]">
             {messages.map((message, index) => (
               <div
@@ -125,11 +118,6 @@ export default function VideoSummaryPage() {
                       : "bg-muted"
                   }`}
                 >
-                  {/* {message.isUser ? (
-                    <User className="h-6 w-6 mt-1 flex-shrink-0" />
-                  ) : (
-                    <Bot className="h-6 w-6 mt-1 flex-shrink-0" />
-                  )} */}
                   <div className="flex-grow">
                     <div className="prose dark:prose-invert max-w-none">
                       {message?.text?.split("\n")?.map((paragraph, i) => {
@@ -191,9 +179,20 @@ export default function VideoSummaryPage() {
                   placeholder="Type your question here..."
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
+                  disabled={isStreamingResponse}
                 />
-                <Button type="submit" disabled={isStreamingResponse}>
-                  Ask
+                <Button
+                  type="submit"
+                  disabled={isStreamingResponse || !inputValue.trim()}
+                >
+                  {isStreamingResponse ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Asking...
+                    </>
+                  ) : (
+                    "Ask"
+                  )}
                 </Button>
               </div>
             </form>
