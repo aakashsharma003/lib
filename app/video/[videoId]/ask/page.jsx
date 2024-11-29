@@ -10,7 +10,6 @@ import { useAuth } from "@clerk/nextjs";
 import { useParams, redirect } from "next/navigation";
 import { DialogLoader } from "@/components/loader";
 
-
 export default function VideoSummaryPage() {
   const { userId } = useAuth();
   if (!userId) {
@@ -28,11 +27,9 @@ export default function VideoSummaryPage() {
   const [isStreamingResponse, setStreamingResponse] = useState(false);
   const [isLoadingTranscript, setLoadingTranscript] = useState(false);
   const [inputValue, setInputValue] = useState("");
-  const [isDialogLoading, setDialogLoading] = useState(false);
 
   useEffect(() => {
     async function getTranscript() {
-      setDialogLoading(true);
       setLoadingTranscript(true);
       try {
         const response = await axios.get(`/api/transcript?videoId=${videoId}`);
@@ -41,7 +38,6 @@ export default function VideoSummaryPage() {
         console.log("error", error);
       } finally {
         setLoadingTranscript(false);
-        setDialogLoading(false);
       }
     }
     getTranscript();
@@ -51,7 +47,6 @@ export default function VideoSummaryPage() {
     e.preventDefault();
     if (!inputValue.trim()) return;
     setStreamingResponse(true);
-    setDialogLoading(true);
 
     setMessages((prev) => [...prev, { text: inputValue, isUser: true }]);
     try {
@@ -88,7 +83,6 @@ export default function VideoSummaryPage() {
     } finally {
       setInputValue("");
       setStreamingResponse(false);
-      setDialogLoading(false);
     }
   };
 
@@ -97,17 +91,18 @@ export default function VideoSummaryPage() {
   };
 
   const saveMessage = (text) => {
-    //  Todo:Implement save functionality here
+    // lets Implement save functionality here
   };
 
   return (
     <div className="min-h-screen bg-background">
-      {isDialogLoading && <DialogLoader />}
-      <div className="container py-6">
+      {isLoadingTranscript? <DialogLoader/>:
+      (<div className="container py-6">
         <div className="mx-auto max-w-2xl">
           {isLoadingTranscript && (
-            <div className="fixed inset-0 flex items-center justify-center">
-              <Loader2 className="h-12 w-12 animate-spin text-primary" />
+            <div className="flex justify-center items-center h-20">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <span className="ml-2 text-lg">loading...</span>
             </div>
           )}
           <div className="space-y-4 pb-[100px]">
@@ -205,7 +200,7 @@ export default function VideoSummaryPage() {
             </form>
           </div>
         </div>
-      </div>
+      </div>)}
     </div>
   );
 }
