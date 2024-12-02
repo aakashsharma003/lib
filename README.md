@@ -1,8 +1,9 @@
 # Library - Collaborative Learning Platform  
 
-A modern collaborative learning platform designed to enhance learning efficiency and foster community-driven knowledge sharing. Library integrates YouTube content to provide contextually filtered insights, real-time doubt resolution, and quick revision tools, creating a focused and productive environment for learners. 
+A platform built to make learning easy and collaborative. With Library, users get filtered YouTube content for better understanding, real-time doubt-solving, and quick revision tools—all in one place.
 
-The major Enhancement that I want in this project is that it works (RAG)Retrieval Augmented generation. 
+## Key Upgrade
+ - Will try to implement RAG (Retrieval Augmented Generation) to provide smart and context-aware learning assistance
 
 ---
 
