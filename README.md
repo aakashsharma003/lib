@@ -2,8 +2,9 @@
 
 A platform built to make learning easy and collaborative. With Library, users get filtered YouTube content for better understanding, real-time doubt-solving, and quick revision tools—all in one place.
 
-## Key Upgrade
+## Key Upgrade in Focus 
  - Will try to implement RAG (Retrieval Augmented Generation) to provide smart and context-aware learning assistance
+ -  References: [Amazon Transcribe](https://aws.amazon.com/pm/transcribe/), [Neon databases](https://neon.tech/?ref=gsy1) 
 
 ---
 
