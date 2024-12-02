@@ -37,7 +37,7 @@ A modern collaborative learning platform designed to enhance learning efficiency
 - **Frontend**: React.js, Tailwind CSS  
 - **Backend**: Node.js, Prisma ORM, MongoDB  
 - **APIs**: YouTube Data API  
-- **Real-Time Communication**: Socket.io  
+### Future Enhancement
 - **AI Tools**: TensorFlow for prediction and filtering models  
 
 ---
