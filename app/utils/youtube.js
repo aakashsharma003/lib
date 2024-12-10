@@ -10,7 +10,7 @@ export const getRelatedVideos = async (relatedContnt) => {
   if (!relatedContnt) {
     throw new Error("Video ID is required");
   }
-  console.log("relatedContnt", relatedContnt);
+  // console.log("relatedContnt", relatedContnt);
   try {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_YOUTUBE_API_URL}/search`, {
       params: {
@@ -23,7 +23,7 @@ export const getRelatedVideos = async (relatedContnt) => {
       },
     });
 
-    console.log("Response received:", response.data);
+    // console.log("Response received:", response.data);
 
     return response.data.items.map((item) => ({
       videoId: item.id.videoId,
@@ -114,7 +114,7 @@ export async function getYoutubeTranscript(videoId) {
     return transcript;
   }
   catch(err){
-   console.log("error occured at transcript", err);
+  //  console.log("error occured at transcript", err);
    return "Hey i am akash sharma from mbm university a passionate open source contributer from india!";
   }
 }

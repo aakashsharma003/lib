@@ -17,7 +17,7 @@ export async function GET(request) {
      const transcript = await getYoutubeTranscript(videoId);
      return NextResponse.json(transcript, { status: 200 });
    } catch (error) {
-     console.error("Error fetching transcript:", error);
+    //  console.error("Error fetching transcript:", error);
      return NextResponse.json(
        { error: "Failed to fetch transcript" },
        { status: 500 }
