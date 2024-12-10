@@ -5,6 +5,74 @@ import { cache } from "react";
 //   return transcript.map((entry) => entry.text).join("\n");
 // }
 
+export const getRelatedVideos = async (relatedContnt) => {
+
+  if (!relatedContnt) {
+    throw new Error("Video ID is required");
+  }
+  console.log("relatedContnt", relatedContnt);
+  try {
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_YOUTUBE_API_URL}/search`, {
+      params: {
+        part: "snippet",
+        // channelId: channelId,
+        q:relatedContnt,
+        type: "video",
+        maxResults: 10,
+        key: process.env.NEXT_PUBLIC_YOUTUBE_API_KEY,
+      },
+    });
+
+    console.log("Response received:", response.data);
+
+    return response.data.items.map((item) => ({
+      videoId: item.id.videoId,
+      title: item.snippet.title,
+      description: item.snippet.description,
+      thumbnail: item.snippet.thumbnails.medium.url,
+      channelTitle: item.snippet.channelTitle,
+      publishedAt: item.snippet.publishedAt,
+    }));
+  } catch (error) {
+    console.error("Error fetching recommended videos:", error.response?.data || error.message);
+    throw new Error("Unable to fetch recommended videos");
+  }
+};
+
+
+export const getInfoWithVideoId = async (videoId) => {
+  try {
+    const resp = await axios.get(`${process.env.NEXT_PUBLIC_YOUTUBE_API_URL}/videos`, {
+      params: {
+        part: "snippet,contentDetails,statistics", 
+        id: videoId, 
+        key: process.env.NEXT_PUBLIC_YOUTUBE_API_KEY, 
+      },
+    });
+    // console.log("data aya", resp);
+    // channelId:item.snippet.channelId,
+    const videoData = resp.data.items[0];
+    const {
+      snippet: { title, description, channelTitle,channelId, publishedAt },
+      statistics: { viewCount, likeCount },
+      contentDetails: { duration },
+    } = videoData;
+
+    return {
+      title,
+      description,
+      channelId,
+      channelTitle,
+      publishedAt,
+      viewCount,
+      likeCount,
+      duration,
+    };
+  } catch (error) {
+    console.error("Error fetching video info:", error);
+    return null;
+  }
+};
 
 export const fetchVideos = cache(async (query) => {
   const apiKey = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
@@ -41,7 +109,7 @@ export async function getYoutubeTranscript(videoId) {
     }
   );
   const transcript = response.data.transcript;
-    //  console.log("transcript", transcript);
+     console.log("transcript", transcript);
     // return formatTranscript(transcript);
     return transcript;
   }
