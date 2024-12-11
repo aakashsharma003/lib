@@ -4,7 +4,7 @@
 
 A platform built to make learning easy and collaborative. With Library, users get filtered YouTube content for better understanding, real-time doubt-solving, and quick revision tools—all in one place.
 
-## Demo
+## Demo: [link](https://drive.google.com/file/d/1-Ov8twrXmmMkX09386QCFeFYP7t-vdin/view?usp=sharing)
 
 
 ## Key Upgrade in Focus 
