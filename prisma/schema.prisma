@@ -12,3 +12,75 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  user_id        Int       @id
+  email          String    @unique
+  firstname      String
+  lastname       String?
+  password_hash  String
+  profile_pic    String?
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @updatedAt // Automatic timestamp updates on record change
+  posts          Post[]
+}
+
+model Video {
+  video_id       Int       @id @default(autoincrement())
+  videoUrl       String    @unique
+  title          String
+  description    String?
+  views          Int       @default(0)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  posts          Post[]    @relation("PostVideos")
+  playlists      Playlist[] @relation("PlaylistVideos")
+}
+
+model Post {
+  post_id        Int       @id @default(autoincrement())
+  user_id        Int
+  playlist_id    Int?
+  video_id       Int?
+  title          String
+  content        String?
+  attach_file    String?    // Optional file attachments
+  category       Category   // Category enum
+  created_at     DateTime   @default(now())
+  updated_at     DateTime   @updatedAt
+  del_status     Boolean    @default(false) // Soft delete capability
+
+  user           User      @relation(fields: [user_id], references: [user_id])
+  video          Video?    @relation("PostVideos", fields: [video_id], references: [video_id])
+  playlist       Playlist? @relation("PostPlaylists", fields: [playlist_id], references: [playlist_id])
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum Category {
+  SOLUTION
+  PROBLEM
+  DOUBT
+  NOTES
+  SUMMARY
+  QUICK_TIPS
+  OTHERS
+}
+
+model Playlist {
+  playlist_id    Int       @id @default(autoincrement())
+  playlist_link  String
+  title          String
+  description    String?
+  summary        String?
+  notes          String?
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @updatedAt
+
+  posts          Post[]    @relation("PostPlaylists")
+  videos         Video[]   @relation("PlaylistVideos")
+}
