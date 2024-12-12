@@ -1,9 +1,6 @@
 "use server";
-
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
 
 export async function POST(request) {
   const clerkSecret = process.env.CLERK_WEBHOOK_SECRET;
