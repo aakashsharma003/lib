@@ -1,6 +1,11 @@
-# Library - Collaborative Learning Platform  
+# Library - Collaborative Learning Platform
+
+> **Note:** The Transcript module is currently experiencing some errors; therefore, I am attaching a video that may not serve as the best example for demonstrating our features. Additionally, the "Ask" feature has been temporarily resolved with a workaround, so I apologize for any inconvenience this may cause, as it might not work for some videos in the live link.
 
 A platform built to make learning easy and collaborative. With Library, users get filtered YouTube content for better understanding, real-time doubt-solving, and quick revision tools—all in one place.
+
+## Demo: [link](https://drive.google.com/file/d/1-Ov8twrXmmMkX09386QCFeFYP7t-vdin/view?usp=sharing)
+
 
 ## Key Upgrade in Focus 
  - Will try to implement RAG (Retrieval Augmented Generation) to provide smart and context-aware learning assistance
