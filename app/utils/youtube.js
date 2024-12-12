@@ -114,7 +114,7 @@ export async function getYoutubeTranscript(videoId) {
     return transcript;
   }
   catch(err){
-  //  console.log("error occured at transcript", err);
-   return "Hey i am akash sharma from mbm university a passionate open source contributer from india!";
+   console.log("error occured at transcript", err);
+   return "";
   }
 }

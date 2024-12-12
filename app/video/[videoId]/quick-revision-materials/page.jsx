@@ -38,14 +38,14 @@ export default function QuickRevisionMaterialsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      {/* <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-14 items-center">
           <Link href="/" className="flex items-center space-x-2">
             <ArrowLeft className="h-4 w-4" />
             <span>Back to Video</span>
           </Link>
         </div>
-      </header>
+      </header> */}
       <main className="container py-6">
         <h1 className="text-3xl font-bold mb-6">Quick Revision Materials</h1>
         <div className="space-y-6">

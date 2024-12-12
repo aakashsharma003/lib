@@ -15,7 +15,7 @@ export async function POST(req) {
     }
 
     // const transcript = await getYoutubeTranscript(videoId);
-    if(transcript)
+    if(transcript.length > 0)
     console.log("we got the transcript");
     const prompt = `You are an AI assistant with extensive knowledge of YouTube content. You have been trained on a vast dataset encompassing millions of YouTube videos across various topics. Your primary function is to answer questions about specific videos and provide insights based on your broad understanding of YouTube content.
 

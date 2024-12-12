@@ -47,7 +47,7 @@ export default function VideoSummaryPage() {
     e.preventDefault();
     if (!inputValue.trim()) return;
     setStreamingResponse(true);
-
+    console.log("transcript h ", transcript);
     setMessages((prev) => [...prev, { text: inputValue, isUser: true }]);
     try {
       const response = await axios.post(`/api/ask`, {
