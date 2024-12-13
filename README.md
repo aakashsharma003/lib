@@ -2,15 +2,14 @@
 
 > **Note:** The Transcript module is currently experiencing some errors; therefore, I am attaching a video that may not serve as the best example for demonstrating our features. Additionally, the "Ask" feature has been temporarily resolved with a workaround, so I apologize for any inconvenience this may cause, as it might not work for some videos in the live link.
 
-## A Quick Preview of our services
+A platform built to make learning easy and collaborative. With Library, users get filtered YouTube content for better understanding, real-time doubt-solving, and quick revision tools—all in one place.
+
+## Our Services 
 ![Screenshot 2024-12-13 214747](https://github.com/user-attachments/assets/91b8914b-b32c-49d6-98aa-102ab4ac3a01)
 ![Screenshot 2024-12-13 215036](https://github.com/user-attachments/assets/72acb7d4-3d6e-4f51-9e35-dea4759ad8b8)
 ![Screenshot 2024-12-13 215129](https://github.com/user-attachments/assets/ae2d57db-eb44-4a61-8e1f-df7dd0a6070c)
 ![Screenshot 2024-12-13 215344](https://github.com/user-attachments/assets/aaa34449-60c5-4f2a-8989-937ba89a4a26)
 
-
-
-A platform built to make learning easy and collaborative. With Library, users get filtered YouTube content for better understanding, real-time doubt-solving, and quick revision tools—all in one place.
 
 ## Demo: [link](https://drive.google.com/file/d/1-Ov8twrXmmMkX09386QCFeFYP7t-vdin/view?usp=sharing)
 
