@@ -1,14 +1,60 @@
 "use client"
 
-import { useState } from "react"
+import { useState,useEffect} from "react"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from 'lucide-react'
 import Link from "next/link"
+import axios from "axios"
+import { useParams } from "next/navigation"
 
 export default function QuickRevisePage() {
-  const [content, setContent] = useState(
-    "React Hooks are functions that let you use state and other React features without writing a class. They were introduced in React 16.8 and have since become an integral part of React development..."
-  )
+  const [content, setContent] = useState([]);
+  const [transcript, setTranscript] = useState("");
+  const [loadingTranscript, setLoadingTranscript] = useState(false);  
+   const { videoId } = useParams();
+  async function getTranscript() {
+    setLoadingTranscript(true);
+    try {
+      const response = await axios.get(
+        `/api/transcript?videoId=vpJGWvi0h9U`
+      );
+      console.log("response yh hhh", response.data);
+      setTranscript(response.data);
+    } catch (error) {
+      console.log("error aa gya")
+      console.log("error", error);
+    } finally {
+      setLoadingTranscript(false);
+    }
+  }
+  async function getQuickRevise() {
+    // setLoadingTranscript(true);
+    console.log("transcript ayyyiiii", transcript);
+    try {
+      const response = await axios.post(`/api/revise-notes`, {
+        videoId: videoId,
+        transcript:transcript
+      });
+      console.log("yh aya response", response);
+      setContent(response);
+    } catch (error) {
+      console.log("error", error);
+    } finally {
+      // setLoadingTranscript(false);
+    }
+  }
+  async function fetchTranscriptAndRevise() {
+    try {
+      await getTranscript(); // Wait for transcript
+      console.log("transcript nhi ayi ",transcript)
+      await getQuickRevise(); // Then get quick revise
+    } catch (error) {
+      console.log("Error occurred during fetch sequence:", error);
+    }
+  }
+    useEffect(() => {
+      fetchTranscriptAndRevise();
+    }, [videoId]);
   const [savedContent, setSavedContent] = useState(content)
 
   const handleSave = () => {
@@ -21,35 +67,56 @@ export default function QuickRevisePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 items-center justify-between">
-          <Link href="/" className="flex items-center space-x-2">
-            <ArrowLeft className="h-4 w-4" />
-            <span>Back</span>
-          </Link>
-          <div className="flex gap-2">
-            <Button onClick={handleSave} variant="outline">
-              Save
-            </Button>
-            <Button onClick={handleRestore} variant="outline">
-              Restore
-            </Button>
-          </div>
-        </div>
-      </header> */}
-      <main className="container py-6">
-        <div className="mx-auto max-w-2xl">
-          <h1 className="text-3xl font-bold mb-6">Introduction to React Hooks</h1>
-          <div className="prose dark:prose-invert">
-            <textarea
-              className="w-full min-h-[200px] bg-background resize-none border-none focus:outline-none"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-            />
-          </div>
-        </div>
-      </main>
+      <ShowContent data={content} />
     </div>
-  )
+  );
+}
+
+const formatContent = (content) => {
+  return content
+    .split("\n")
+    .map((line) =>
+      line.trim().startsWith("-")
+        ? `<li>${line.slice(1).trim()}</li>`
+        : `<p>${line}</p>`
+    )
+    .join("")
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+};
+
+function ShowContent({data}) {
+  const groupedData = data.reduce((acc, item) => {
+    if (!acc[item.topic]) {
+      acc[item.topic] = [];
+    }
+    acc[item.topic].push(item);
+    return acc;
+  }, {});
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      {data[0]?.heading && (
+        <h1 className="text-3xl font-bold mb-6 text-center">
+          {data[0].heading}
+        </h1>
+      )}
+      {Object.entries(groupedData).map(([topic, items]) => (
+        <div key={topic} className="mb-8">
+          <h2 className="text-2xl font-semibold mb-4">{topic}</h2>
+          {items.map((item, index) => (
+            <div key={index} className="mb-4 bg-white shadow-md rounded-lg p-6">
+              <h3 className="text-xl font-medium mb-2">{item.subtopic}</h3>
+              <div
+                className="prose max-w-none"
+                dangerouslySetInnerHTML={{
+                  __html: formatContent(item.content),
+                }}
+              />
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
 }
 

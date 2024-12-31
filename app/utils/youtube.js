@@ -109,7 +109,7 @@ export async function getYoutubeTranscript(videoId) {
     }
   );
   const transcript = response.data.transcript;
-     console.log("transcript", transcript);
+    //  console.log("transcript", transcript);
     // return formatTranscript(transcript);
     return transcript;
   }

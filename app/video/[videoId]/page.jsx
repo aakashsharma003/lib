@@ -67,7 +67,7 @@ export default function Page() {
                   </Link>
                 </Button>
                 <Button asChild variant="outline" className="w-full sm:w-auto">
-                  <Link href="/quick-revise">
+                  <Link href={`${videoId}/quick-revise`}>
                     <BookOpen className="mr-2 h-4 w-4" />
                     Quick Revise
                   </Link>
@@ -79,11 +79,11 @@ export default function Page() {
                   </Link>
                 </Button>
               </div>
-              <VideoInfo info={info}/>
+              <VideoInfo info={info} />
               <UserActions />
             </div>
             <div>
-              <RecommendedVideos videos={videos}/>
+              <RecommendedVideos videos={videos} />
             </div>
           </div>
         </div>
