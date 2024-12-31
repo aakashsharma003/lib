@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Bell, User, Library } from "lucide-react";
-import { useAuth, SignInButton } from "@clerk/nextjs";
+import { useAuth, SignInButton, UserButton } from "@clerk/nextjs";
 import { SearchForm } from "./search-form";
 
 
@@ -28,7 +28,7 @@ export function Header() {
               <Bell className="h-5 w-5" />
             </Button>
             <Button variant="ghost" size="icon">
-              <User className="h-5 w-5" />
+              <UserButton className="h-5 w-5" />
             </Button>
           </div>
         ) : (

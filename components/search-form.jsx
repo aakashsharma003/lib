@@ -32,12 +32,12 @@ function SearchFormContent() {
       <Input
         type="search"
         placeholder="Search videos..."
-        className="w-full"
+        className="w-full text-sm md:text-base"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         disabled={isLoading}
       />
-      <Button type="submit" size="icon" className="ml-2" disabled={isLoading}>
+      <Button type="submit" size="icon" className="ml-2 hidden md:flex" disabled={isLoading}>
         {isLoading ? (
           <Loader2 className="h-4 w-4 animate-spin" />
         ) : (

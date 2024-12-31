@@ -9,10 +9,48 @@ import { VideoPlayer } from "@/components/video-player"
 import { CreatePost } from "@/components/create-post"
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
+import { getInfoWithVideoId, getRelatedVideos } from "@/app/utils/youtube"
 
 
 export default function Page() {
-  const {videoId} = useParams();  
+  const [info, setInfo] = useState(); 
+  const [videos, setVideo] = useState(); 
+  const [channelid, setchannelId] = useState("");
+  const {videoId} = useParams();
+  
+  useEffect(() => {
+     const getVideoInfo = async() => {
+      const videoInfo = await getInfoWithVideoId(videoId);
+       
+      // console.log("yha tk aya");
+       setInfo(videoInfo);
+
+      //  setchannelId(videoInfo.title + " " + videoInfo.channelTitle)
+       if (videoInfo) {
+        // Call getRecommendedVideo after setting the channelId
+        await getRecommendedVideo(videoInfo.title + " " + videoInfo.channelTitle);
+      } else {
+        // console.log("Failed to fetch video details.");
+      }
+     }
+
+     const getRecommendedVideo = async(q) => {
+       const resp = await getRelatedVideos(q);
+       // Todo : fix it with channelId
+
+      // console.log("yha tk channel aya",resp);
+       setVideo(resp);
+      if (videos) {
+        // console.log("Video Info:", videos);
+      } else {
+        console.log("Failed to fetch related videos.");
+      }
+     }
+     
+     getVideoInfo();
+    //  getRecommendedVideo();
+  }, [])
+  
   return (
     <div className="min-h-screen flex flex-col">
       {/* <Header /> */}
@@ -41,11 +79,11 @@ export default function Page() {
                   </Link>
                 </Button>
               </div>
-              <VideoInfo />
+              <VideoInfo info={info}/>
               <UserActions />
             </div>
             <div>
-              <RecommendedVideos />
+              <RecommendedVideos videos={videos}/>
             </div>
           </div>
         </div>
