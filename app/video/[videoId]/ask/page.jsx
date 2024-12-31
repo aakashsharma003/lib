@@ -99,12 +99,6 @@ export default function VideoSummaryPage() {
       {isLoadingTranscript? <DialogLoader/>:
       (<div className="container py-6">
         <div className="mx-auto max-w-2xl">
-          {isLoadingTranscript && (
-            <div className="flex justify-center items-center h-20">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <span className="ml-2 text-lg">loading...</span>
-            </div>
-          )}
           <div className="space-y-4 pb-[100px]">
             {messages.map((message, index) => (
               <div
