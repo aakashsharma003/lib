@@ -1,69 +1,61 @@
-"use client"
+"use client";
 
-import { useState,useEffect} from "react"
-import { Button } from "@/components/ui/button"
-import { ArrowLeft } from 'lucide-react'
-import Link from "next/link"
-import axios from "axios"
-import { useParams } from "next/navigation"
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { useParams } from "next/navigation";
 
 export default function QuickRevisePage() {
   const [content, setContent] = useState([]);
   const [transcript, setTranscript] = useState("");
-  const [loadingTranscript, setLoadingTranscript] = useState(false);  
-   const { videoId } = useParams();
+  const [loadingTranscript, setLoadingTranscript] = useState(false);
+  const { videoId } = useParams();
+
   async function getTranscript() {
     setLoadingTranscript(true);
     try {
-      const response = await axios.get(
-        `/api/transcript?videoId=vpJGWvi0h9U`
-      );
-      console.log("response yh hhh", response.data);
+      const response = await axios.get(`/api/transcript?videoId=${videoId}`);
+      console.log("transcript response", response.data);
       setTranscript(response.data);
     } catch (error) {
-      console.log("error aa gya")
-      console.log("error", error);
+      console.log("error in getTranscript", error);
     } finally {
       setLoadingTranscript(false);
     }
   }
+
   async function getQuickRevise() {
-    // setLoadingTranscript(true);
-    console.log("transcript ayyyiiii", transcript);
+    console.log("transcript in getQuickRevise", transcript);
     try {
       const response = await axios.post(`/api/revise-notes`, {
         videoId: videoId,
-        transcript:transcript
+        transcript: transcript,
       });
-      console.log("yh aya response", response);
-      setContent(response);
+      console.log("response from revise-notes", response);
+      setContent(response.data);
     } catch (error) {
-      console.log("error", error);
-    } finally {
-      // setLoadingTranscript(false);
+      console.log("error in getQuickRevise", error);
     }
   }
-  async function fetchTranscriptAndRevise() {
-    try {
-      await getTranscript(); // Wait for transcript
-      console.log("transcript nhi ayi ",transcript)
-      await getQuickRevise(); // Then get quick revise
-    } catch (error) {
-      console.log("Error occurred during fetch sequence:", error);
+
+  useEffect(() => {
+    getTranscript();
+  }, [videoId]);
+
+  useEffect(() => {
+    if (transcript) {
+      getQuickRevise();
     }
-  }
-    useEffect(() => {
-      fetchTranscriptAndRevise();
-    }, [videoId]);
-  const [savedContent, setSavedContent] = useState(content)
+  }, [transcript, videoId]);
+
+  const [savedContent, setSavedContent] = useState(content);
 
   const handleSave = () => {
-    setSavedContent(content)
-  }
+    setSavedContent(content);
+  };
 
   const handleRestore = () => {
-    setContent(savedContent)
-  }
+    setContent(savedContent);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -84,7 +76,7 @@ const formatContent = (content) => {
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
 };
 
-function ShowContent({data}) {
+function ShowContent({ data }) {
   const groupedData = data.reduce((acc, item) => {
     if (!acc[item.topic]) {
       acc[item.topic] = [];
@@ -119,4 +111,3 @@ function ShowContent({data}) {
     </div>
   );
 }
-
