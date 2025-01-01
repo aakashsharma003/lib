@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 
 export function VideoInfo({info}) {
-  console.log("informatopn",info)
+  //console.log("informatopn",info)
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false)
   return (
     <div className="mt-4">

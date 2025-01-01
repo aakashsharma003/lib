@@ -20,7 +20,7 @@ export default function VideoSummaryPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setStreamingResponse(true);
-    //  console.log("input value", inputValue)
+    //  //console.log("input value", inputValue)
     if (!inputValue.trim()) return;
 
     // Add user message
@@ -30,7 +30,7 @@ export default function VideoSummaryPage() {
         videoId: "009FHqBo87Q",
         question: inputValue,
       });
-      // console.log("response m kya aya",response.data);
+      // //console.log("response m kya aya",response.data);
       // Check if the response status is not OK
       if (response.status !== 200) {
         setTimeout(() => {
@@ -67,7 +67,7 @@ export default function VideoSummaryPage() {
   };
 
   const saveMessage = (text) => {
-    // console.log("Saving message:", text);
+    // //console.log("Saving message:", text);
   };
 
   return (

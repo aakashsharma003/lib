@@ -13,10 +13,8 @@ export async function POST(req) {
 
     if (transcript.length > 0) console.log("we got the transcript");
 
-    const prompt = `Generate a concise set of quick revision notes based on the following transcript. Return the result as a JSON array of objects.
-
+    const prompt = `Generate a concise set of quick revision notes based on the following transcript. Return the result as a JSON array of objects of size 20 at maximum with concise content.
 Each object should have the following structure:
-
 {
   "heading": "The main heading of the topic",
   "topic": "The specific topic under the heading",
@@ -39,10 +37,12 @@ Here is the video transcript:
 
     const answer = await askOpenAI(prompt);
     let parsedAnswer;
-
+  let cleanJsonString = answer.split("`")[3].replace(/^json/, "").trim();
+  // console.log("yh h array",cleanJsonString)
     try {
+     
       // Attempt to parse the answer as JSON
-      parsedAnswer = JSON.parse(answer);
+      parsedAnswer = JSON.parse(cleanJsonString);
 
       // Ensure the parsed answer is an array
       if (!Array.isArray(parsedAnswer)) {
@@ -50,7 +50,7 @@ Here is the video transcript:
       }
     } catch (parseError) {
       console.error("Error parsing OpenAI response:", parseError);
-      console.log("Raw OpenAI response:", answer);
+      // console.log("Raw OpenAI response:", answer);
       parsedAnswer = [
         {
           heading: "Error",
@@ -69,7 +69,7 @@ Here is the video transcript:
       content: item.content || "No Content",
     }));
 
-    console.log("Formatted answer:", formattedAnswer);
+    // console.log("Formatted answer:", formattedAnswer);
 
     return NextResponse.json(formattedAnswer);
   } catch (error) {

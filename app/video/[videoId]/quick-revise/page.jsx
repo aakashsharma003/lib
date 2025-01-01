@@ -3,18 +3,19 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 export default function QuickRevisePage() {
   const [content, setContent] = useState([]);
   const [transcript, setTranscript] = useState("");
   const [loadingTranscript, setLoadingTranscript] = useState(false);
+  const [loadingContent, setLoadingContent] = useState(false);
   const { videoId } = useParams();
 
   async function getTranscript() {
     setLoadingTranscript(true);
     try {
       const response = await axios.get(`/api/transcript?videoId=${videoId}`);
-      console.log("transcript response", response.data);
       setTranscript(response.data);
     } catch (error) {
       console.log("error in getTranscript", error);
@@ -24,16 +25,17 @@ export default function QuickRevisePage() {
   }
 
   async function getQuickRevise() {
-    console.log("transcript in getQuickRevise", transcript);
+    setLoadingContent(true);
     try {
       const response = await axios.post(`/api/revise-notes`, {
         videoId: videoId,
         transcript: transcript,
       });
-      console.log("response from revise-notes", response);
       setContent(response.data);
     } catch (error) {
       console.log("error in getQuickRevise", error);
+    } finally {
+      setLoadingContent(false);
     }
   }
 
@@ -56,6 +58,14 @@ export default function QuickRevisePage() {
   const handleRestore = () => {
     setContent(savedContent);
   };
+
+  if (loadingTranscript || loadingContent) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-12 h-12 text-black animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -86,7 +96,7 @@ function ShowContent({ data }) {
   }, {});
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 bg-[#f3f4f6]">
       {data[0]?.heading && (
         <h1 className="text-3xl font-bold mb-6 text-center">
           {data[0].heading}

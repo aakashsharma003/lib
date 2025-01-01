@@ -10,7 +10,7 @@ export const getRelatedVideos = async (relatedContnt) => {
   if (!relatedContnt) {
     throw new Error("Video ID is required");
   }
-  // console.log("relatedContnt", relatedContnt);
+  // //console.log("relatedContnt", relatedContnt);
   try {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_YOUTUBE_API_URL}/search`, {
       params: {
@@ -23,7 +23,7 @@ export const getRelatedVideos = async (relatedContnt) => {
       },
     });
 
-    // console.log("Response received:", response.data);
+    // //console.log("Response received:", response.data);
 
     return response.data.items.map((item) => ({
       videoId: item.id.videoId,
@@ -49,7 +49,7 @@ export const getInfoWithVideoId = async (videoId) => {
         key: process.env.NEXT_PUBLIC_YOUTUBE_API_KEY, 
       },
     });
-    // console.log("data aya", resp);
+    // //console.log("data aya", resp);
     // channelId:item.snippet.channelId,
     const videoData = resp.data.items[0];
     const {
@@ -109,12 +109,12 @@ export async function getYoutubeTranscript(videoId) {
     }
   );
   const transcript = response.data.transcript;
-    //  console.log("transcript", transcript);
+    //  //console.log("transcript", transcript);
     // return formatTranscript(transcript);
     return transcript;
   }
   catch(err){
-   console.log("error occured at transcript", err);
+   //console.log("error occured at transcript", err);
    return "";
   }
 }

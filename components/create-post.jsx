@@ -22,11 +22,11 @@ export function CreatePost({videoId}) {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Here you would typically send the note and attachment to your backend
-    // console.log("Submitting note:", note)
-    // console.log("Note title:", noteTitle)
-    // console.log("Attachment type:", attachmentType)
-    // console.log("Drive link:", driveLink)
-    // console.log("File:", file)
+    // //console.log("Submitting note:", note)
+    // //console.log("Note title:", noteTitle)
+    // //console.log("Attachment type:", attachmentType)
+    // //console.log("Drive link:", driveLink)
+    // //console.log("File:", file)
     const noteId = Date.now().toString();
     router.push(`/video/${videoId}/notes/${noteId}`);
     setNote("");

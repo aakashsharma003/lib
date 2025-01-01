@@ -22,7 +22,7 @@ export default function Page() {
      const getVideoInfo = async() => {
       const videoInfo = await getInfoWithVideoId(videoId);
        
-      // console.log("yha tk aya");
+      // //console.log("yha tk aya");
        setInfo(videoInfo);
 
       //  setchannelId(videoInfo.title + " " + videoInfo.channelTitle)
@@ -30,7 +30,7 @@ export default function Page() {
         // Call getRecommendedVideo after setting the channelId
         await getRecommendedVideo(videoInfo.title + " " + videoInfo.channelTitle);
       } else {
-        // console.log("Failed to fetch video details.");
+        // //console.log("Failed to fetch video details.");
       }
      }
 
@@ -38,12 +38,12 @@ export default function Page() {
        const resp = await getRelatedVideos(q);
        // Todo : fix it with channelId
 
-      // console.log("yha tk channel aya",resp);
+      // //console.log("yha tk channel aya",resp);
        setVideo(resp);
       if (videos) {
-        // console.log("Video Info:", videos);
+        // //console.log("Video Info:", videos);
       } else {
-        console.log("Failed to fetch related videos.");
+        //console.log("Failed to fetch related videos.");
       }
      }
      
