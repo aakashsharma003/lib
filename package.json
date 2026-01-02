@@ -25,20 +25,20 @@
     "googleapis": "^144.0.0",
     "limiter": "^2.1.0",
     "lucide-react": "^0.460.0",
-    "next": "15.1.4",
+    "next": "^15.1.4",
     "openai": "^4.73.0",
-    "react": "19.0.0",
-    "react-dom": "19.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
     "youtube-transcript": "^1.2.1"
-},
-"devDependencies": {
+  },
+  "devDependencies": {
     "@prisma/client": "^6.0.1",
     "eslint": "^8",
     "eslint-config-next": "15.1.4",
     "postcss": "^8",
     "prisma": "^6.0.1",
     "tailwindcss": "^3.4.1"
-}
+  }
 }
