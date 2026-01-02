@@ -19,15 +19,10 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider>
-      <html lang="en">
+   <ClerkProvider>
+      <html lang="en" suppressHydrationWarning>
         <body className={inter.className}>
-          <Header />
-          <div className="min-h-screen bg-background font-sans antialiased">
-            <div className="relative flex min-h-screen flex-col">
-              <div className="flex-1">{children}</div>
-            </div>
-          </div>
+          {children}
         </body>
       </html>
     </ClerkProvider>

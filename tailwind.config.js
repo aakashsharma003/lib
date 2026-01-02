@@ -54,7 +54,21 @@ module.exports = {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
+		keyframes: {
+        'fade-in-up': {
+          '0%': { opacity: '0', transform: 'translate(-50%, 60%)' },
+          '100%': { opacity: '1', transform: 'translate(-50%, 50%)' },
+        },
+        'fade-in': {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+      },
+      animation: {
+        'fade-in-up': 'fade-in-up 0.6s ease-out forwards',
+        'fade-in': 'fade-in 0.8s ease-out forwards',
+      },
   	}
   },
   plugins: [require("tailwindcss-animate")],
