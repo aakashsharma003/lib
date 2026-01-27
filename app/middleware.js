@@ -9,6 +9,11 @@ export default authMiddleware({
       signInUrl.searchParams.set("redirect_url", req.url);
       return Response.redirect(signInUrl);
     }
+    
+    // Redirect authenticated users to /home after login/signup
+    if (auth.userId && (req.nextUrl.pathname === "/" || req.nextUrl.pathname === "/sign-in")) {
+      return Response.redirect(new URL("/home", req.url));
+    }
   },
 });
 
