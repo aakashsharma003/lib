@@ -1,5 +1,6 @@
 'use client'
 import React, { useState, useRef, useEffect } from 'react'
+import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, ArrowRight, MessageSquare, BookMarked, Lightbulb, Zap, Brain } from 'lucide-react'
 import { SignIn, SignUp } from '@clerk/nextjs'
@@ -169,23 +170,23 @@ const Logo = ({ variant = 'navbar' }) => {
 
   if (isNavbar) {
     return (
-      <a href="/" className="flex items-center flex-shrink-0 gap-1 bg-white rounded-full px-3 py-2">
+      <Link href="/" className="flex items-center flex-shrink-0 gap-1 bg-white rounded-full px-3 py-2">
         <div className="w-8 h-8 text-blue-500 rounded-lg flex items-center justify-center font-bold">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-library"><path d="m16 6 4 14"></path><path d="M12 6v14"></path><path d="M8 8v12"></path><path d="M4 4v16"></path></svg>
         </div>
         <span className="font-bold text-lg tracking-tight text-blue-500">Library</span>
-      </a>
+      </Link>
     )
   }
 
   if (isFooter) {
     return (
-      <a href="/" className="flex items-center gap-2 mb-6">
+      <Link href="/" className="flex items-center gap-2 mb-6">
         <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center font-bold text-white">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-library text-white"><path d="m16 6 4 14"></path><path d="M12 6v14"></path><path d="M8 8v12"></path><path d="M4 4v16"></path></svg>
         </div>
         <span className="font-bold text-2xl tracking-tight text-white">Library</span>
-      </a>
+      </Link>
     )
   }
 
@@ -413,7 +414,7 @@ const FeaturesSection = () => {
         <div className="text-center mb-24">
           <h2 className="text-4xl sm:text-5xl font-black text-white mb-6">Built for results.</h2>
           <p className="text-zinc-500 max-w-2xl mx-auto text-lg">
-            Standard video players aren't built for education. We built a layer on top that turns passive watching into active mastery.
+            Standard video players aren&apos;t built for education. We built a layer on top that turns passive watching into active mastery.
           </p>
         </div>
 

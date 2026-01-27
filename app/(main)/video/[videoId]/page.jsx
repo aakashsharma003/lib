@@ -49,7 +49,7 @@ export default function Page() {
      
      getVideoInfo();
     //  getRecommendedVideo();
-  }, [])
+  }, [videoId, videos])
   
   return (
     <div className="min-h-screen flex flex-col">

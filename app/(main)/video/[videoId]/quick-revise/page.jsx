@@ -41,13 +41,13 @@ export default function QuickRevisePage() {
 
   useEffect(() => {
     getTranscript();
-  }, [videoId]);
+  }, [videoId, getTranscript]);
 
   useEffect(() => {
     if (transcript) {
       getQuickRevise();
     }
-  }, [transcript, videoId]);
+  }, [transcript, videoId, getQuickRevise]);
 
   const [savedContent, setSavedContent] = useState(content);
 

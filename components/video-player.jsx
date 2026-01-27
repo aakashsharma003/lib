@@ -23,7 +23,7 @@ export function VideoPlayer({videoId}) {
       firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
 
       window.onYouTubeIframeAPIReady = loadVideo;
-    }, []);
+    }, [loadVideo]);
 
     useEffect(() => {
       if (playerRef.current) {
