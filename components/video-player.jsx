@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useCallback } from "react"
 import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
 import { Play, Pause, Volume2, VolumeX, Maximize, Minimize, SkipBack, SkipForward } from 'lucide-react'
@@ -15,6 +15,44 @@ export function VideoPlayer({videoId}) {
     const [isControlsVisible, setIsControlsVisible] = useState(true);
     const playerRef = useRef(null);
     const containerRef = useRef(null);
+    const timeIntervalRef = useRef(null);
+
+    const handleTimeUpdate = useCallback(() => {
+      if (playerRef.current && playerRef.current.getCurrentTime) {
+        setCurrentTime(playerRef.current.getCurrentTime());
+      }
+    }, []);
+
+    const onPlayerReady = useCallback((event) => {
+      setDuration(event.target.getDuration());
+      setVolume(event.target.getVolume());
+      setIsPlaying(true);
+
+      if (timeIntervalRef.current) clearInterval(timeIntervalRef.current);
+      timeIntervalRef.current = setInterval(handleTimeUpdate, 1000);
+    }, [handleTimeUpdate]);
+
+    const onPlayerStateChange = useCallback((event) => {
+      setIsPlaying(event.data === window.YT.PlayerState.PLAYING);
+    }, []);
+
+    const loadVideo = useCallback(() => {
+      playerRef.current = new window.YT.Player("youtube-player", {
+        height: "100%",
+        width: "100%",
+        videoId: videoId,
+        playerVars: {
+          autoplay: 1,
+          controls: 0,
+          modestbranding: 1,
+          rel: 0,
+        },
+        events: {
+          onReady: onPlayerReady,
+          onStateChange: onPlayerStateChange,
+        },
+      });
+    }, [videoId, onPlayerReady, onPlayerStateChange]);
 
     useEffect(() => {
       const tag = document.createElement("script");
@@ -23,6 +61,10 @@ export function VideoPlayer({videoId}) {
       firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
 
       window.onYouTubeIframeAPIReady = loadVideo;
+      return () => {
+        if (timeIntervalRef.current) clearInterval(timeIntervalRef.current);
+        timeIntervalRef.current = null;
+      };
     }, [loadVideo]);
 
     useEffect(() => {
@@ -39,36 +81,6 @@ export function VideoPlayer({videoId}) {
       return () => clearTimeout(timer);
     }, [isControlsVisible]);
 
-    const loadVideo = () => {
-      playerRef.current = new window.YT.Player("youtube-player", {
-        height: "100%",
-        width: "100%",
-        videoId: videoId,
-        playerVars: {
-          autoplay: 1,
-          controls: 0,
-          modestbranding: 1,
-          rel: 0,
-        },
-        events: {
-          onReady: onPlayerReady,
-          onStateChange: onPlayerStateChange,
-        },
-      });
-    };
-
-    const onPlayerReady = (event) => {
-      setDuration(event.target.getDuration());
-      setVolume(event.target.getVolume());
-      setIsPlaying(true);
-      // Start updating current time
-      setInterval(handleTimeUpdate, 1000);
-    };
-
-    const onPlayerStateChange = (event) => {
-      setIsPlaying(event.data === window.YT.PlayerState.PLAYING);
-    };
-
     const togglePlay = () => {
       if (playerRef.current) {
         if (isPlaying) {
@@ -77,12 +89,6 @@ export function VideoPlayer({videoId}) {
           playerRef.current.playVideo();
         }
         setIsPlaying(!isPlaying);
-      }
-    };
-
-    const handleTimeUpdate = () => {
-      if (playerRef.current && playerRef.current.getCurrentTime) {
-        setCurrentTime(playerRef.current.getCurrentTime());
       }
     };
 

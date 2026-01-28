@@ -497,7 +497,7 @@ export default function LandingPage() {
           <p className="text-blue-100 text-xl mb-12 font-medium opacity-90 max-w-2xl mx-auto">
             Join thousands of students and professionals who have leveled up their learning game.
           </p>
-          <button onClick={showSignUp} className="px-10 py-5 bg-white text-blue-600 rounded-full font-black text-xl hover:scale-105 transition-transform shadow-2xl active:scale-95">
+          <button onClick={() => setShowSignUp(true)} className="px-10 py-5 bg-white text-blue-600 rounded-full font-black text-xl hover:scale-105 transition-transform shadow-2xl active:scale-95">
             Get Started for Free
           </button>
         </div>
@@ -527,7 +527,12 @@ export default function LandingPage() {
               >
                 <X size={24} className="text-white" />
               </button>
-              <SignIn routing="hash" appearance={{ layout: 'modal' }} />
+              <SignIn
+                routing="hash"
+                appearance={{ layout: 'modal' }}
+                afterSignInUrl="/home"
+                afterSignUpUrl="/home"
+              />
             </motion.div>
           </motion.div>
         )}
@@ -556,7 +561,12 @@ export default function LandingPage() {
               >
                 <X size={24} className="text-white" />
               </button>
-              <SignUp routing="hash" appearance={{ layout: 'modal' }} />
+              <SignUp
+                routing="hash"
+                appearance={{ layout: 'modal' }}
+                afterSignInUrl="/home"
+                afterSignUpUrl="/home"
+              />
             </motion.div>
           </motion.div>
         )}

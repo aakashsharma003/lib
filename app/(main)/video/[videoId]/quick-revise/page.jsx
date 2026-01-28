@@ -12,42 +12,44 @@ export default function QuickRevisePage() {
   const [loadingContent, setLoadingContent] = useState(false);
   const { videoId } = useParams();
 
-  async function getTranscript() {
-    setLoadingTranscript(true);
-    try {
-      const response = await axios.get(`/api/transcript?videoId=${videoId}`);
-      setTranscript(response.data);
-    } catch (error) {
-      console.log("error in getTranscript", error);
-    } finally {
-      setLoadingTranscript(false);
-    }
-  }
+  useEffect(() => {
+    if (!videoId) return;
 
-  async function getQuickRevise() {
-    setLoadingContent(true);
-    try {
-      const response = await axios.post(`/api/revise-notes`, {
-        videoId: videoId,
-        transcript: transcript,
-      });
-      setContent(response.data);
-    } catch (error) {
-      console.log("error in getQuickRevise", error);
-    } finally {
-      setLoadingContent(false);
-    }
-  }
+    const fetchTranscript = async () => {
+      setLoadingTranscript(true);
+      try {
+        const response = await axios.get(`/api/transcript?videoId=${videoId}`);
+        setTranscript(response.data);
+      } catch (error) {
+        console.log("error in getTranscript", error);
+      } finally {
+        setLoadingTranscript(false);
+      }
+    };
+
+    fetchTranscript();
+  }, [videoId]);
 
   useEffect(() => {
-    getTranscript();
-  }, [videoId, getTranscript]);
+    if (!videoId || !transcript) return;
 
-  useEffect(() => {
-    if (transcript) {
-      getQuickRevise();
-    }
-  }, [transcript, videoId, getQuickRevise]);
+    const fetchQuickRevise = async () => {
+      setLoadingContent(true);
+      try {
+        const response = await axios.post(`/api/revise-notes`, {
+          videoId,
+          transcript,
+        });
+        setContent(response.data);
+      } catch (error) {
+        console.log("error in getQuickRevise", error);
+      } finally {
+        setLoadingContent(false);
+      }
+    };
+
+    fetchQuickRevise();
+  }, [videoId, transcript]);
 
   const [savedContent, setSavedContent] = useState(content);
 

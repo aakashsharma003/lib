@@ -1,7 +1,17 @@
- import { fetchVideos } from "@/app/utils/youtube";
-import { VideoFeed } from "@/components/video-feed"
+import { fetchVideos } from "@/app/utils/youtube";
+import { VideoFeed } from "@/components/video-feed";
 import { Suspense } from "react";
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+
 export default async function HomePage({ searchParams }) {
+  const { userId } = await auth();
+
+  // Double-check: if not logged in, redirect to landing page
+  if (!userId) {
+    redirect("/");
+  }
+
   const searchQuery = await searchParams?.search || "Gate Operating System";
   const videos = await fetchVideos(searchQuery);
   return (
