@@ -1,4 +1,4 @@
-import { fetchVideos } from "@/app/utils/youtube";
+ import { fetchVideos } from "@/app/utils/youtube";
 import { VideoFeed } from "@/components/video-feed";
 import { Suspense } from "react";
 import { auth } from "@clerk/nextjs/server";

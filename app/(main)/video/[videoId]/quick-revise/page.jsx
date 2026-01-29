@@ -16,15 +16,15 @@ export default function QuickRevisePage() {
     if (!videoId) return;
 
     const fetchTranscript = async () => {
-      setLoadingTranscript(true);
-      try {
-        const response = await axios.get(`/api/transcript?videoId=${videoId}`);
-        setTranscript(response.data);
-      } catch (error) {
-        console.log("error in getTranscript", error);
-      } finally {
-        setLoadingTranscript(false);
-      }
+    setLoadingTranscript(true);
+    try {
+      const response = await axios.get(`/api/transcript?videoId=${videoId}`);
+      setTranscript(response.data);
+    } catch (error) {
+      console.log("error in getTranscript", error);
+    } finally {
+      setLoadingTranscript(false);
+    }
     };
 
     fetchTranscript();
@@ -34,18 +34,18 @@ export default function QuickRevisePage() {
     if (!videoId || !transcript) return;
 
     const fetchQuickRevise = async () => {
-      setLoadingContent(true);
-      try {
-        const response = await axios.post(`/api/revise-notes`, {
+    setLoadingContent(true);
+    try {
+      const response = await axios.post(`/api/revise-notes`, {
           videoId,
           transcript,
-        });
-        setContent(response.data);
-      } catch (error) {
-        console.log("error in getQuickRevise", error);
-      } finally {
-        setLoadingContent(false);
-      }
+      });
+      setContent(response.data);
+    } catch (error) {
+      console.log("error in getQuickRevise", error);
+    } finally {
+      setLoadingContent(false);
+    }
     };
 
     fetchQuickRevise();
