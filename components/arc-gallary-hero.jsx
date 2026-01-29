@@ -1,6 +1,7 @@
 "use client"
 
 import Link from 'next/link';
+import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 
 const ArcGalleryHero = ({
@@ -81,11 +82,13 @@ const ArcGalleryHero = ({
                   className="rounded-2xl shadow-xl overflow-hidden ring-1 ring-border bg-card transition-transform hover:scale-105 w-full h-full"
                   style={{ transform: `rotate(${angle / 4}deg)` }}
                 >
-                  <img
+                  <Image
                     src={src}
                     alt="Study Resource"
                     className="block w-full h-full object-cover"
                     draggable={false}
+                    width={400}
+                    height={400}
                   />
                 </div>
               </div>

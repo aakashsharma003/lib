@@ -34,7 +34,12 @@ export const getRelatedVideos = async (relatedContnt) => {
       publishedAt: item.snippet.publishedAt,
     }));
   } catch (error) {
-    console.error("Error fetching recommended videos:", error.response?.data || error.message);
+    console.error("Error fetching recommended videos:", {
+      message: error.message,
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      data: error.response?.data,
+    });
     throw new Error("Unable to fetch recommended videos");
   }
 };

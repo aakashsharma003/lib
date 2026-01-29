@@ -12,7 +12,10 @@ export default function QuickRevisePage() {
   const [loadingContent, setLoadingContent] = useState(false);
   const { videoId } = useParams();
 
-  async function getTranscript() {
+  useEffect(() => {
+    if (!videoId) return;
+
+    const fetchTranscript = async () => {
     setLoadingTranscript(true);
     try {
       const response = await axios.get(`/api/transcript?videoId=${videoId}`);
@@ -22,14 +25,20 @@ export default function QuickRevisePage() {
     } finally {
       setLoadingTranscript(false);
     }
-  }
+    };
 
-  async function getQuickRevise() {
+    fetchTranscript();
+  }, [videoId]);
+
+  useEffect(() => {
+    if (!videoId || !transcript) return;
+
+    const fetchQuickRevise = async () => {
     setLoadingContent(true);
     try {
       const response = await axios.post(`/api/revise-notes`, {
-        videoId: videoId,
-        transcript: transcript,
+          videoId,
+          transcript,
       });
       setContent(response.data);
     } catch (error) {
@@ -37,17 +46,10 @@ export default function QuickRevisePage() {
     } finally {
       setLoadingContent(false);
     }
-  }
+    };
 
-  useEffect(() => {
-    getTranscript();
-  }, [videoId]);
-
-  useEffect(() => {
-    if (transcript) {
-      getQuickRevise();
-    }
-  }, [transcript, videoId]);
+    fetchQuickRevise();
+  }, [videoId, transcript]);
 
   const [savedContent, setSavedContent] = useState(content);
 

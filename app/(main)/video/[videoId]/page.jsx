@@ -19,37 +19,27 @@ export default function Page() {
   const {videoId} = useParams();
   
   useEffect(() => {
-     const getVideoInfo = async() => {
+    if (!videoId) return;
+
+    const getRecommendedVideo = async (q) => {
+      const resp = await getRelatedVideos(q);
+      // Todo : fix it with channelId
+      setVideo(resp);
+    };
+
+    const getVideoInfo = async () => {
       const videoInfo = await getInfoWithVideoId(videoId);
-       
-      // //console.log("yha tk aya");
-       setInfo(videoInfo);
+      setInfo(videoInfo);
 
-      //  setchannelId(videoInfo.title + " " + videoInfo.channelTitle)
-       if (videoInfo) {
-        // Call getRecommendedVideo after setting the channelId
-        await getRecommendedVideo(videoInfo.title + " " + videoInfo.channelTitle);
-      } else {
-        // //console.log("Failed to fetch video details.");
+      if (videoInfo) {
+        await getRecommendedVideo(
+          `${videoInfo.title} ${videoInfo.channelTitle}`,
+        );
       }
-     }
+    };
 
-     const getRecommendedVideo = async(q) => {
-       const resp = await getRelatedVideos(q);
-       // Todo : fix it with channelId
-
-      // //console.log("yha tk channel aya",resp);
-       setVideo(resp);
-      if (videos) {
-        // //console.log("Video Info:", videos);
-      } else {
-        //console.log("Failed to fetch related videos.");
-      }
-     }
-     
-     getVideoInfo();
-    //  getRecommendedVideo();
-  }, [])
+    getVideoInfo();
+  }, [videoId]);
   
   return (
     <div className="min-h-screen flex flex-col">

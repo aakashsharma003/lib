@@ -1,11 +1,5 @@
-import {
-  ClerkProvider,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/nextjs";
 import { Header } from "@/components/header";
+import ClerkProviderWrapper from "@/components/clerk-provider-wrapper";
 import "./globals.css";
 import { Inter } from "next/font/google";
 
@@ -19,12 +13,12 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-   <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
-        <body className={inter.className}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
+        <ClerkProviderWrapper>
           {children}
-        </body>
-      </html>
-    </ClerkProvider>
+        </ClerkProviderWrapper>
+      </body>
+    </html>
   );
 }
