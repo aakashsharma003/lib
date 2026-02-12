@@ -15,17 +15,18 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
-        <ClerkProviderWrapper>
-          {children}
-        </ClerkProviderWrapper>
-
+       <head>
         <Script 
           src="https://www.webtracky.com/analytics.js"
           data-tracker="036ac35e-9bb5-4253-938b-fc0742846433"
           data-hosts="join-library.vercel.app"
-          strategy="afterInteractive" 
+          strategy="beforeInteractive" 
         />
+      </head>
+      <body className={inter.className}>
+        <ClerkProviderWrapper>
+          {children}
+        </ClerkProviderWrapper>
       </body>
     </html>
   );
