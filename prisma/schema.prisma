@@ -14,11 +14,12 @@ datasource db {
 }
 
 model User {
-  user_id        Int       @id
+  user_id        Int       @id @default(autoincrement())
+  clerkId        String    @unique
   email          String    @unique
   firstname      String
   lastname       String?
-  password_hash  String
+  password_hash  String?
   profile_pic    String?
   created_at     DateTime  @default(now())
   updated_at     DateTime  @updatedAt // Automatic timestamp updates on record change
@@ -83,4 +84,11 @@ model Playlist {
 
   posts          Post[]    @relation("PostPlaylists")
   videos         Video[]   @relation("PlaylistVideos")
+}
+
+model SecureVideo {
+  id          String   @id @default(uuid())
+  videoId     String
+  encryptedId String   @unique
+  createdAt   DateTime @default(now())
 }
