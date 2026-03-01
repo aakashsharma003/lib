@@ -1,6 +1,7 @@
 import { Header } from "@/components/header";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { ClientTour } from "@/components/client-tour";
 
 export default async function MainLayout({ children }) {
   const { userId } = await auth();
@@ -12,11 +13,9 @@ export default async function MainLayout({ children }) {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <ClientTour />
       <Header />
       <main className="flex-1">{children}</main>
-      <footer className="border-t border-border py-6 text-center text-sm text-muted-foreground">
-        © {new Date().getFullYear()} Library. All rights reserved.
-      </footer>
     </div>
   );
 }
