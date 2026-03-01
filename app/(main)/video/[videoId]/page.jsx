@@ -7,17 +7,20 @@ import { VideoInfo } from "@/components/video-info"
 import { UserActions } from "@/components/user-actions"
 import { VideoPlayer } from "@/components/video-player"
 import { CreatePost } from "@/components/create-post"
+import { VideoChat } from "@/components/video-chat"
+import { VideoNotes } from "@/components/video-notes"
 import { useEffect, useState } from "react"
 import { useParams } from "next/navigation"
 import { getInfoWithVideoId, getRelatedVideos } from "@/app/utils/youtube"
 
 
 export default function Page() {
-  const [info, setInfo] = useState(); 
-  const [videos, setVideo] = useState(); 
+  const [info, setInfo] = useState();
+  const [videos, setVideo] = useState();
   const [channelid, setchannelId] = useState("");
-  const {videoId} = useParams();
-  
+  const [activeTab, setActiveTab] = useState("overview");
+  const { videoId } = useParams();
+
   useEffect(() => {
     if (!videoId) return;
 
@@ -40,37 +43,67 @@ export default function Page() {
 
     getVideoInfo();
   }, [videoId]);
-  
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* <Header /> */}
       <main className="flex-1">
-        <div className="container mx-auto px-4 py-8">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-6">
               <VideoPlayer videoId={videoId} />
-              <div className="flex flex-wrap gap-2">
-                <Button asChild variant="outline" className="w-full sm:w-auto">
-                  <Link href={`${videoId}/ask`}>
-                    <MessageSquare className="mr-2 h-4 w-4" />
-                    Ask Questions
-                  </Link>
+
+              {/* Tab Navigation */}
+              <div className="flex flex-wrap gap-2 pt-2 border-b border-border/10 pb-4">
+                <Button
+                  variant={activeTab === 'overview' ? 'default' : 'outline'}
+                  onClick={() => setActiveTab('overview')}
+                  className="rounded-full px-5 hover:bg-secondary/60 border-border/50"
+                >
+                  Overview
                 </Button>
-                <Button asChild variant="outline" className="w-full sm:w-auto">
-                  <Link href={`${videoId}/quick-revise`}>
-                    <BookOpen className="mr-2 h-4 w-4" />
-                    Quick Revise
-                  </Link>
+                <Button
+                  variant={activeTab === 'chat' ? 'default' : 'outline'}
+                  onClick={() => setActiveTab('chat')}
+                  className="rounded-full px-5 hover:bg-secondary/60 border-border/50"
+                >
+                  <MessageSquare className="mr-2 h-4 w-4" />
+                  Ask Questions
                 </Button>
-                <Button asChild variant="outline" className="w-full sm:w-auto">
-                  <Link href="/quick-revision-materials">
-                    <Book className="mr-2 h-4 w-4" />
-                    Revision Materials
-                  </Link>
+                <Button
+                  variant="outline"
+                  className="rounded-full px-5 hover:bg-secondary/60 border-border/50"
+                  onClick={() => {
+                    import("sonner").then(({ toast }) => {
+                      toast.info("Feature under construction!", {
+                        description: "Quick Revise is currently being built and will be available soon."
+                      });
+                    });
+                  }}
+                >
+                  <BookOpen className="mr-2 h-4 w-4" />
+                  Quick Revise
+                </Button>
+                <Button
+                  variant={activeTab === 'notes' ? 'default' : 'outline'}
+                  onClick={() => setActiveTab('notes')}
+                  className="rounded-full px-5 hover:bg-secondary/60 border-border/50"
+                >
+                  <Book className="mr-2 h-4 w-4" />
+                  Notes
                 </Button>
               </div>
-              <VideoInfo info={info} />
-              <UserActions />
+
+              {/* Tab Content */}
+              {activeTab === 'overview' && (
+                <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                  <VideoInfo info={info} />
+                  <UserActions />
+                </div>
+              )}
+              {activeTab === 'chat' && <VideoChat videoId={videoId} />}
+              {activeTab === 'notes' && <VideoNotes videoId={videoId} channelTitle={info?.channelTitle} />}
+
             </div>
             <div>
               <RecommendedVideos videos={videos} />
