@@ -14,16 +14,20 @@ export async function POST(req) {
       );
     }
 
-    // const transcript = await getYoutubeTranscript(videoId);
-    if(transcript.length > 0)
-    console.log("we got the transcript");
+    if (transcript?.length > 0) {
+      console.log("we got the transcript length:", transcript.length);
+    }
+
+    // Truncate transcript if it's exceedingly large to avoid API timeouts limits
+    const safeTranscript = transcript ? transcript.slice(0, 50000) : "";
+
     const prompt = `You are an AI assistant with extensive knowledge of YouTube content. You have been trained on a vast dataset encompassing millions of YouTube videos across various topics. Your primary function is to answer questions about specific videos and provide insights based on your broad understanding of YouTube content.
 
    When answering questions:
 
   For questions directly related to the content of a specific video:
    Provide accurate, detailed answers based on the video's content.
-   Reference specific parts of the video when relevant, such as "Around the 2-minute mark in the video, the speaker discusses..."
+   Reference specific parts of the video when relevant.
     Do not mention or refer to any transcript. Present your knowledge as if you've watched and understood the video directly.
 
   For questions about business logic, YouTube trends, or general information not specific to the video:
@@ -40,13 +44,13 @@ export async function POST(req) {
 Remember, your responses should seamlessly blend specific video knowledge with broader YouTube insights, creating a cohesive and knowledgeable persona. Always refer to the video content directly, as if you've watched and analyzed it, rather than mentioning any behind-the-scenes processes or data sources.
 
 Here is the video content:
-[${transcript}]
+[${safeTranscript}]
 
 User's question:
 [${question}]
 `;
-    const answer = await askOpenAI(prompt, question);
-     console.log("answer by gemini", answer);
+    const answer = await askOpenAI(prompt);
+    // console.log("answer by gemini", answer);
     return NextResponse.json({ answer });
   } catch (error) {
     console.log("Error in API route:", error);
