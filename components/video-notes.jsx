@@ -38,8 +38,25 @@ export function VideoNotes({ videoId, channelTitle }) {
             </div>
 
             {isLoading ? (
-                <div className="flex justify-center items-center py-12">
-                    <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                <div className="flex flex-col mt-4 border border-border/20 rounded-2xl p-2 sm:p-4">
+                    {[...Array(3)].map((_, index) => (
+                        <div key={index} className="flex flex-row gap-6 border-b border-border/20 py-6 last:border-0 p-4 -mx-4 rounded-xl items-center animate-pulse">
+                            <div className="flex-1 space-y-4">
+                                <div className="flex items-center space-x-2">
+                                    <div className="h-6 w-6 rounded-full bg-secondary/80"></div>
+                                    <div className="h-3 w-32 bg-secondary/80 rounded"></div>
+                                </div>
+                                <div className="space-y-2">
+                                    <div className="h-5 w-[80%] bg-secondary/80 rounded"></div>
+                                    <div className="h-4 w-[60%] bg-secondary/60 rounded"></div>
+                                </div>
+                                <div className="h-4 w-48 bg-secondary/60 rounded pt-2"></div>
+                            </div>
+                            <div className="hidden sm:block shrink-0 w-[120px] sm:w-[160px] lg:w-[180px]">
+                                <div className="aspect-[4/3] w-full rounded-md bg-secondary/60"></div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             ) : notes.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-16 px-4 text-center bg-secondary/20 rounded-2xl border border-dashed border-border/60">

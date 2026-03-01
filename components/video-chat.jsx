@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Send, User, Loader2 } from "lucide-react";
+import { chatWithVideo } from "@/app/actions/chat";
 
 export function VideoChat({ videoId }) {
     const [messages, setMessages] = useState([
@@ -15,6 +16,7 @@ export function VideoChat({ videoId }) {
     ]);
     const [input, setInput] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [loadingMessage, setLoadingMessage] = useState("Analyzing video...");
     const scrollRef = useRef(null);
 
     // Auto-scroll to bottom of chat
@@ -24,27 +26,65 @@ export function VideoChat({ videoId }) {
         }
     }, [messages, isLoading]);
 
-    const handleSend = (e) => {
+    // ChatGPT style dynamic loading messages
+    useEffect(() => {
+        if (!isLoading) return;
+
+        const loadingStates = [
+            "Analyzing video...",
+            "Fetching transcript...",
+            "Embedding context...",
+            "Searching vector space...",
+            "Generating response...",
+            "Refining answer..."
+        ];
+
+        let currentIndex = 0;
+        setLoadingMessage(loadingStates[0]);
+
+        const interval = setInterval(() => {
+            currentIndex = (currentIndex + 1) % loadingStates.length;
+            // Stop cycling at the last logical message
+            if (currentIndex < loadingStates.length) {
+                setLoadingMessage(loadingStates[currentIndex]);
+            }
+        }, 2500); // Change text every 2.5 seconds
+
+        return () => clearInterval(interval);
+    }, [isLoading]);
+
+    const handleSend = async (e) => {
         e.preventDefault();
         if (!input.trim() || isLoading) return;
 
-        const userMessage = { id: Date.now(), role: "user", content: input };
+        const currentInput = input;
+        const userMessage = { id: Date.now(), role: "user", content: currentInput };
         setMessages((prev) => [...prev, userMessage]);
         setInput("");
         setIsLoading(true);
 
-        // Mock AI response
-        setTimeout(() => {
+        try {
+            const responseText = await chatWithVideo(videoId, messages, currentInput);
             setMessages((prev) => [
                 ...prev,
                 {
                     id: Date.now() + 1,
                     role: "assistant",
-                    content: `Based on the video transcript, here is some context answering your query: "${userMessage.content}". Since this is a demonstration, I don't have a live AI backend attached yet, but I'm ready for integration!`,
+                    content: responseText,
                 },
             ]);
+        } catch (error) {
+            setMessages((prev) => [
+                ...prev,
+                {
+                    id: Date.now() + 1,
+                    role: "assistant",
+                    content: "I'm sorry, my connection was interrupted. Please try asking again.",
+                },
+            ]);
+        } finally {
             setIsLoading(false);
-        }, 1500);
+        }
     };
 
     return (
@@ -88,7 +128,7 @@ export function VideoChat({ videoId }) {
                         </Avatar>
                         <div className="p-4 rounded-2xl bg-secondary/50 rounded-tl-sm flex items-center space-x-2">
                             <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-                            <span className="text-sm text-muted-foreground font-medium">Analyzing transcript...</span>
+                            <span className="text-sm text-muted-foreground font-medium animate-pulse">{loadingMessage}</span>
                         </div>
                     </div>
                 )}

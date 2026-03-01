@@ -20,42 +20,44 @@ export function UserActions() {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-2 mt-4">
-      <Button 
-        variant={isLiked ? "default" : "outline"} 
-        size="sm" 
-        onClick={handleLike}
-        className="flex-grow sm:flex-grow-0"
-      >
-        <ThumbsUp className={`mr-2 h-4 w-4 ${isLiked ? 'fill-current' : ''}`} />
-        {isLiked ? '124K' : '123K'}
-      </Button>
-      <Button 
-        variant={isDisliked ? "default" : "outline"} 
-        size="sm" 
-        onClick={handleDislike}
-        className="flex-grow sm:flex-grow-0"
-      >
-        <ThumbsDown className={`mr-2 h-4 w-4 ${isDisliked ? 'fill-current' : ''}`} />
-        Dislike
-      </Button>
-      <Button variant="outline" size="sm" className="flex-grow sm:flex-grow-0">
-        <Share2 className="mr-2 h-4 w-4" />
-        Share
-      </Button>
-      <Button variant="outline" size="sm" className="flex-grow sm:flex-grow-0">
-        <Download className="mr-2 h-4 w-4" />
-        Download
-      </Button>
-      <Button 
-        variant={isSaved ? "default" : "outline"} 
-        size="sm" 
-        onClick={() => setIsSaved(!isSaved)}
-        className="flex-grow sm:flex-grow-0"
-      >
-        {isSaved ? <Check className="mr-2 h-4 w-4" /> : <Plus className="mr-2 h-4 w-4" />}
-        {isSaved ? 'Saved' : 'Save'}
-      </Button>
+    <div className="flex flex-col">
+      <div className="flex flex-wrap items-center gap-2 mt-4 pb-4">
+        <div className="flex items-center rounded-full bg-secondary/40">
+          <Button
+            variant="ghost"
+            onClick={handleLike}
+            className="rounded-l-full rounded-r-none px-4 hover:bg-secondary/60 h-9"
+          >
+            <ThumbsUp className={`mr-2 h-4 w-4 ${isLiked ? 'fill-current' : ''}`} />
+            <span className="font-medium text-sm">{isLiked ? '124K' : '123K'}</span>
+          </Button>
+          <div className="w-[1px] h-5 bg-border/50" />
+          <Button
+            variant="ghost"
+            onClick={handleDislike}
+            className="rounded-r-full rounded-l-none px-4 hover:bg-secondary/60 h-9"
+          >
+            <ThumbsDown className={`h-4 w-4 ${isDisliked ? 'fill-current' : ''}`} />
+          </Button>
+        </div>
+
+        <Button variant="ghost" className="rounded-full bg-secondary/40 hover:bg-secondary/60 px-4 h-9">
+          <Share2 className="mr-2 h-4 w-4" />
+          <span className="font-medium text-sm">Share</span>
+        </Button>
+        <Button variant="ghost" className="rounded-full bg-secondary/40 hover:bg-secondary/60 px-4 h-9">
+          <Download className="mr-2 h-4 w-4" />
+          <span className="font-medium text-sm">Download</span>
+        </Button>
+        <Button
+          variant="ghost"
+          onClick={() => setIsSaved(!isSaved)}
+          className="rounded-full bg-secondary/40 hover:bg-secondary/60 px-4 h-9"
+        >
+          {isSaved ? <Check className="mr-2 h-4 w-4" /> : <Plus className="mr-2 h-4 w-4" />}
+          <span className="font-medium text-sm">{isSaved ? 'Saved' : 'Save'}</span>
+        </Button>
+      </div>
     </div>
   )
 }

@@ -21,29 +21,31 @@ function SearchFormContent() {
       setIsLoading(true);
       const params = new URLSearchParams(searchParams.toString());
       searchTerm ? params.set("search", searchTerm) : params.delete("search");
-      await router.push(`/?${params.toString()}`);
+
+      // Navigate to /home with search params instead of root
+      await router.push(`/home?${params.toString()}`);
       setIsLoading(false);
     },
     [searchTerm, searchParams, router]
   );
 
   return (
-    <form className="flex items-center" onSubmit={handleSearch}>
-      <Input
-        type="search"
-        placeholder="Search videos..."
-        className="w-full text-sm md:text-base"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        disabled={isLoading}
-      />
-      <Button type="submit" size="icon" className="ml-2 hidden md:flex" disabled={isLoading}>
+    <form className="relative flex items-center w-full max-w-[180px] sm:max-w-xs md:max-w-sm group" onSubmit={handleSearch}>
+      <div className="absolute left-3 flex items-center justify-center pointer-events-none text-muted-foreground group-focus-within:text-foreground transition-colors">
         {isLoading ? (
           <Loader2 className="h-4 w-4 animate-spin" />
         ) : (
           <Search className="h-4 w-4" />
         )}
-      </Button>
+      </div>
+      <Input
+        type="search"
+        placeholder="Search"
+        className="w-full text-sm rounded-full bg-secondary/50 border-transparent hover:border-border focus-visible:ring-0 focus-visible:bg-background focus-visible:border-border pl-10 pr-4 transition-all h-9 sm:h-10"
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        disabled={isLoading}
+      />
     </form>
   );
 }

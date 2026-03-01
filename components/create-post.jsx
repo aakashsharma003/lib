@@ -224,7 +224,7 @@ export function CreatePost({ videoId }) {
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
           <Button
-            className="fixed bottom-4 right-4 rounded-full w-12 h-12 sm:w-14 sm:h-14 shadow-lg"
+            className="tour-attach-note fixed bottom-4 right-4 rounded-full w-12 h-12 sm:w-14 sm:h-14 shadow-lg"
             size="icon"
           >
             <Paperclip className="h-6 w-6" />

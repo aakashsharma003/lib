@@ -1,8 +1,14 @@
+"use client";
+
 import Image from "next/image"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
-import { Youtube, BookOpen } from "lucide-react"
+import { Youtube, BookOpen, Loader2 } from "lucide-react"
 import { toast } from "sonner"
+import { RecommendedVideoSkeleton } from "./video-skelaton"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { createSecureVideoLink } from "@/app/actions/video"
 
 const decodeHtml = (html) => {
   if (!html) return '';
@@ -11,6 +17,17 @@ const decodeHtml = (html) => {
 
 
 export function RecommendedVideos({ videos }) {
+  const router = useRouter();
+  const [loadingVideoId, setLoadingVideoId] = useState(null);
+  if (!videos) {
+    return (
+      <div>
+        <h2 className="text-xl font-semibold mb-4 px-2">Recommended videos</h2>
+        <RecommendedVideoSkeleton count={8} />
+      </div>
+    );
+  }
+
   return (
     <div>
       <h2 className="text-xl font-semibold mb-4 px-2">Recommended videos</h2>
@@ -27,17 +44,22 @@ export function RecommendedVideos({ videos }) {
             />
           );
 
+          const isNavigating = loadingVideoId === video?.videoId;
+
           const content = (
-            <div className={`flex items-start group hover:bg-secondary/10 p-1.5 -mx-1.5 rounded-lg transition-colors ${!isYouTube && 'cursor-pointer'}`}>
-              <div className="relative flex-shrink-0 mr-2.5">
+            <div className={`flex items-start group hover:bg-secondary/10 p-1.5 -mx-1.5 rounded-lg transition-colors ${(!isYouTube || isNavigating) ? 'cursor-pointer' : 'cursor-pointer'} ${isNavigating ? 'opacity-70 pointer-events-none' : ''}`}>
+              <div className="relative flex-shrink-0 mr-2.5 w-[160px] h-[90px]">
                 <Image
                   src={video?.thumbnail}
                   alt={video?.title}
-                  width={160}
-                  height={90}
-                  className="rounded-lg object-cover"
+                  fill
+                  style={{ objectFit: 'cover' }}
+                  className="rounded-lg"
                 />
-                <div className="absolute bottom-1 right-1 flex items-center gap-1 bg-black/80 backdrop-blur-sm px-1 py-0.5 rounded">
+                <div className="absolute absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                  {isNavigating && <Loader2 className="w-5 h-5 text-primary animate-spin" />}
+                </div>
+                <div className="tour-platform-tag absolute bottom-1 right-1 flex items-center gap-1 bg-black/80 backdrop-blur-sm px-1 py-0.5 rounded">
                   {platformIcon}
                   <span className="text-white text-[10px] font-medium tracking-wide">
                     {video.duration || "12:34"}
@@ -64,9 +86,22 @@ export function RecommendedVideos({ videos }) {
           );
 
           return isYouTube ? (
-            <Link key={video?.videoId} href={`/video/${video?.videoId}`}>
+            <div
+              key={video?.videoId}
+              onClick={async () => {
+                if (isNavigating) return;
+                setLoadingVideoId(video.videoId);
+                try {
+                  const encryptedId = await createSecureVideoLink(video.videoId);
+                  router.push(`/video/${encryptedId}`);
+                } catch (e) {
+                  toast.error("Failed to secure link. Access denied.");
+                  setLoadingVideoId(null);
+                }
+              }}
+            >
               {content}
-            </Link>
+            </div>
           ) : (
             <div
               key={video?.videoId || Math.random()}
