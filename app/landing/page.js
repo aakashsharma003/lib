@@ -100,7 +100,7 @@ const FEATURES = [
 
 const FOOTER_LINKS = {
   Product: ['Features', 'Pricing', 'Demo', 'Changelog'],
-  Learning: ['YouTube Content', 'Community Notes', 'Doubt Solving', 'Guides'],
+  Learning: ['Video Platforms', 'Community Notes', 'Doubt Solving', 'Guides'],
   Company: ['About', 'Careers', 'Blog', 'Contact'],
   Legal: ['Privacy', 'Terms', 'Security', 'Cookies'],
 }
