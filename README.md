@@ -4,18 +4,8 @@ A platform built to make learning easy and collaborative. With Library, users ge
 
 **Live**: [link](https://join-library.vercel.app)
 
-## Our Services
-<img width="3826" height="2010" alt="image" src="https://github.com/user-attachments/assets/5b1b9b0f-5ea9-4949-860d-f74810d81aae" />
-
-<img width="3826" height="2010" alt="image" src="https://github.com/user-attachments/assets/12eeb32b-da82-488e-8eeb-a56890ef6e9e" />
-
-<img width="3826" height="2010" alt="image" src="https://github.com/user-attachments/assets/7ecf4e52-d316-4d38-bc36-bf2fe20002c9" />
-
-<img width="3826" height="2010" alt="image" src="https://github.com/user-attachments/assets/5b9c6ff7-70f8-429a-ac60-da919ab0f797" />
-
-<img width="3826" height="2010" alt="image" src="https://github.com/user-attachments/assets/4246af17-afe3-4ece-be1d-752fdaafc6fd" />
-
-<img width="3826" height="2010" alt="image" src="https://github.com/user-attachments/assets/a19de252-a878-458c-835a-c84e5591d552" />
+## Plateform Preview
+<p align="center"> <img src="https://github.com/user-attachments/assets/5b1b9b0f-5ea9-4949-860d-f74810d81aae" width="90%" style="border-radius:20px; margin-bottom:20px;" /> </p> <p align="center"> <img src="https://github.com/user-attachments/assets/12eeb32b-da82-488e-8eeb-a56890ef6e9e" width="90%" style="border-radius:20px; margin-bottom:20px;" /> </p> <p align="center"> <img src="https://github.com/user-attachments/assets/7ecf4e52-d316-4d38-bc36-bf2fe20002c9" width="90%" style="border-radius:20px; margin-bottom:20px;" /> </p> <p align="center"> <img src="https://github.com/user-attachments/assets/5b9c6ff7-70f8-429a-ac60-da919ab0f797" width="90%" style="border-radius:20px; margin-bottom:20px;" /> </p> <p align="center"> <img src="https://github.com/user-attachments/assets/4246af17-afe3-4ece-be1d-752fdaafc6fd" width="90%" style="border-radius:20px; margin-bottom:20px;" /> </p> <p align="center"> <img src="https://github.com/user-attachments/assets/a19de252-a878-458c-835a-c84e5591d552" width="90%" style="border-radius:20px;" /> </p>
 
 
 ## Demo: [link](https://drive.google.com/file/d/1-Ov8twrXmmMkX09386QCFeFYP7t-vdin/view?usp=sharing)
