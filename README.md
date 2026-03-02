@@ -1,8 +1,8 @@
-# Library — Collaborative Learning Platform
+# Library - Collaborative Learning Platform
 
-> **Note:** The Transcript module is currently experiencing some errors; therefore, I am attaching a video that may not serve as the best example for demonstrating our features. Additionally, the "Ask" feature has been temporarily resolved with a workaround, so I apologize for any inconvenience this may cause, as it might not work for some videos in the live link.
+A platform built to make learning easy and collaborative. With Library, users get filtered YouTube content for better understanding, real-time doubt-solving, and quick revision tools — all in one place.
 
-A collaborative learning platform to discover, share, and engage with educational content across YouTube, Udemy, Coursera, and more — all in one place. Library filters out distractions, surfaces high-quality videos, and gives you AI-powered study tools so you can focus on learning.
+**Live**: [join-library.vercel.app](https://join-library.vercel.app)
 
 ## Our Services
 ![Screenshot 2024-12-13 214747](https://github.com/user-attachments/assets/91b8914b-b32c-49d6-98aa-102ab4ac3a01)
@@ -12,54 +12,62 @@ A collaborative learning platform to discover, share, and engage with educationa
 
 ## Demo: [link](https://drive.google.com/file/d/1-Ov8twrXmmMkX09386QCFeFYP7t-vdin/view?usp=sharing)
 
-## Key Upgrade in Focus
- - Will try to implement RAG (Retrieval Augmented Generation) to provide smart and context-aware learning assistance
- -  References: [Amazon Transcribe](https://aws.amazon.com/pm/transcribe/), [Neon databases](https://neon.tech/?ref=gsy1)
-
 ---
 
 ## 🚀 Features
 
-### 1. **Multi-Platform Content Integration**
-- Aggregates educational videos from YouTube, Udemy, Coursera, and other learning platforms.
-- Platform source icons let you instantly see where each video comes from.
-- AI-powered filtering keeps content focused on education.
+### 1. **YouTube Content Integration**
+- Seamless integration with YouTube to bring video content directly to the platform.
+- AI-powered filtering to keep content focused on education and block distractions.
+- Platform source icons to identify content origin at a glance.
 
-### 2. **User-Generated Notes**
-- Attach and share notes to videos via Google Drive integration.
-- Upvoting system for quality content to highlight the most useful notes.
+### 2. **AI Study Chat (Gemini)**
+- Ask any question about a video and get accurate, contextual answers.
+- Powered by Google Gemini with RAG (Retrieval Augmented Generation) for transcript-grounded responses.
+- Smart chunking and embedding pipeline for precise context retrieval.
 
-### 3. **Quick Revision Tools**
-- AI-powered suggestions for concise summaries and tips related to the topic.
+### 3. **User-Generated Notes & Google Drive Sync**
+- Attach and share notes to videos directly from Google Drive.
+- One-time Drive consent for seamless file uploads.
+- Upvoting system to highlight the most useful community notes.
+
+### 4. **Quick Revision Tools**
+- AI-generated concise revision cards from video transcripts.
 - Save time by revising key points instead of watching entire videos.
 
-### 4. **Real-Time Doubt Resolution**
+### 5. **Real-Time Doubt Resolution**
 - Filtered comment sections for relevant discussions and doubt resolution.
 - Foster collaborative learning with community-driven answers.
 
-### 5. **Intelligent Filtering System**
-- Block distractions and entertainment content during focused learning sessions.
-- Enable a distraction-free learning environment.
+### 6. **Smart Onboarding Tour**
+- Branded welcome experience for new users with feature walkthrough.
+- Two-phase guided tour: Home page features → Video page tools.
+- Personalized greeting using the user's name.
 
-### 6. **AI Study Chat**
-- Gemini-powered Q&A grounded in the video's actual transcript.
-- Ask specific questions about any video and get accurate, contextual answers.
+### 7. **Dark Mode & Modern UI**
+- System-aware dark/light mode with smooth transitions.
+- Responsive design optimized for mobile, tablet, and desktop.
+- Infinite scroll video feed with skeleton loading states.
 
 ---
 
 ## 🛠️ Technologies Used
 
-- **Frontend**: Next.js 15, React, Tailwind CSS
-- **Backend**: Node.js, Prisma ORM, Neon (PostgreSQL)
-- **Auth**: Clerk (Google OAuth)
-- **AI**: Google Gemini API
-- **APIs**: YouTube Data API, Kome Transcript API
+| Layer | Stack |
+|-------|-------|
+| **Framework** | Next.js 15 (App Router) |
+| **Frontend** | React, Tailwind CSS, Framer Motion |
+| **Backend** | Node.js, Prisma ORM |
+| **Database** | Neon (PostgreSQL) |
+| **Auth** | Clerk (Google OAuth) |
+| **AI** | Google Gemini API |
+| **APIs** | YouTube Data API, Kome Transcript API |
+| **Storage** | Google Drive API |
+| **Deployment** | Vercel |
 
 ---
 
 ## 📦 Installation and Setup
-
-Follow these steps to set up the project locally:
 
 1. **Clone the Repository**
    ```bash
@@ -73,7 +81,7 @@ Follow these steps to set up the project locally:
    ```
 
 3. **Set Up Environment Variables**
-   Create a `.env` file in the root directory and add:
+   Create a `.env` file in the root directory:
    ```env
    NEXT_PUBLIC_YOUTUBE_API_KEY=your_youtube_api_key
    NEXT_PUBLIC_YOUTUBE_API_URL=https://www.googleapis.com/youtube/v3
@@ -81,13 +89,15 @@ Follow these steps to set up the project locally:
    CLERK_SECRET_KEY=
    NEXT_PUBLIC_GEMINI_API_KEY=
    DATABASE_URL=
+   CLERK_WEBHOOK_SECRET=
+   YOUTUBE_TRANSCRIPT_URI=
    ```
 
-4. **Start the Development Server**
+4. **Run the Development Server**
    ```bash
    npm run dev
    ```
-   Visit [http://localhost:3000](http://localhost:3000) to open the app.
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 

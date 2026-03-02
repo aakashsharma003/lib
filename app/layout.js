@@ -8,9 +8,9 @@ import { Inter } from "next/font/google";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Library",
+  title: "library",
   description:
-    "A collaborative learning platform to discover, share, and engage with educational content across YouTube, Udemy, Coursera, and more.",
+    "A collaborative learning platform to filter, share, and engage with educational YouTube content.",
 };
 
 export default function RootLayout({ children }) {
