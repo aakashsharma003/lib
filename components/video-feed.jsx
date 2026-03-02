@@ -1,22 +1,16 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Youtube, BookOpen } from "lucide-react";
+import { Youtube, BookOpen, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { fetchVideos } from "@/app/utils/youtube";
 import { useInView } from "react-intersection-observer";
 import { motion } from "framer-motion";
-import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createSecureVideoLink } from "@/app/actions/video";
-
-const decodeHtml = (html) => {
-  if (!html) return '';
-  return html.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
-};
+import { decodeHtml } from "@/lib/utils";
 
 export function VideoFeed({ initialVideos = [], initialPageToken = null, searchQuery, initialBlocked = false }) {
   const [videos, setVideos] = useState(initialVideos);
@@ -102,10 +96,12 @@ export function VideoFeed({ initialVideos = [], initialPageToken = null, searchQ
           const platformDomain = video.platform === 'youtube' ? 'youtube.com' : (video.platform === 'udemy' ? 'udemy.com' : 'coursera.org');
 
           const platformIcon = (
-            <img
+            <Image
               src={`https://www.google.com/s2/favicons?domain=${platformDomain}&sz=128`}
               alt={video.platform || 'youtube'}
-              className="w-5 h-5 rounded-sm object-contain"
+              width={20}
+              height={20}
+              className="rounded-sm object-contain"
             />
           );
 

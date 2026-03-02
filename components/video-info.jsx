@@ -5,10 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 
-const decodeHtml = (html) => {
-  if (!html) return '';
-  return html.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
-};
+import { decodeHtml } from "@/lib/utils"
 
 export function VideoInfo({ info }) {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false)

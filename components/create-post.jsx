@@ -327,7 +327,7 @@ export function CreatePost({ videoId }) {
 
                 <div className="bg-muted p-3 mt-4 rounded-md border border-border">
                   <p className="text-sm text-muted-foreground mb-2">
-                    <strong>Drive Consent Info:</strong> We only want your consent to upload your notes file to Google Drive. The file link will automatically be set according to your access preferences, and will be added to this YouTuber's video notes for others to read.
+                    <strong>Drive Consent Info:</strong> We only want your consent to upload your notes file to Google Drive. The file link will automatically be set according to your access preferences, and will be added to this YouTuber&apos;s video notes for others to read.
                   </p>
                   {needsConsent && (
                     <Button type="button" variant="default" className="w-full text-xs" onClick={handleConnectDrive}>

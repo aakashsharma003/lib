@@ -1,35 +1,33 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-// Define public routes - only "/" and auth pages
+// Public routes — accessible without authentication
 const isPublicRoute = createRouteMatcher([
   "/",
+  "/landing(.*)",
   "/sign-in(.*)",
   "/sign-up(.*)",
 ]);
+
+// Routes that should redirect logged-in users to /home
+const isLandingRoute = createRouteMatcher(["/", "/landing(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
   const { userId } = await auth();
   const pathname = req.nextUrl.pathname;
 
-  // Explicitly check if this is a protected route (anything that's not public)
-  const isProtectedRoute = !isPublicRoute(req);
-
-  // If user is NOT logged in and trying to access protected route
-  if (!userId && isProtectedRoute) {
-    // Redirect to landing page
+  // If user is NOT logged in and trying to access a protected route → landing
+  if (!userId && !isPublicRoute(req)) {
     const url = new URL("/", req.url);
     return NextResponse.redirect(url);
   }
 
-  // If user IS logged in and trying to access landing page
-  if (userId && pathname === "/") {
-    // Redirect to home page
+  // If user IS logged in and on any landing/root page → redirect to /home
+  if (userId && isLandingRoute(req)) {
     const url = new URL("/home", req.url);
     return NextResponse.redirect(url);
   }
 
-  // Allow the request to proceed
   return NextResponse.next();
 });
 

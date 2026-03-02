@@ -1,19 +1,13 @@
 "use client";
 
 import Image from "next/image"
-import Link from "next/link"
-import { Badge } from "@/components/ui/badge"
-import { Youtube, BookOpen, Loader2 } from "lucide-react"
+import { BookOpen, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import { RecommendedVideoSkeleton } from "./video-skelaton"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { createSecureVideoLink } from "@/app/actions/video"
-
-const decodeHtml = (html) => {
-  if (!html) return '';
-  return html.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
-};
+import { decodeHtml } from "@/lib/utils"
 
 
 export function RecommendedVideos({ videos }) {
@@ -37,10 +31,12 @@ export function RecommendedVideos({ videos }) {
           const platformDomain = video.platform === 'youtube' ? 'youtube.com' : (video.platform === 'udemy' ? 'udemy.com' : 'coursera.org');
 
           const platformIcon = (
-            <img
+            <Image
               src={`https://www.google.com/s2/favicons?domain=${platformDomain}&sz=128`}
               alt={video.platform || 'youtube'}
-              className="w-3.5 h-3.5 rounded-sm object-contain"
+              width={14}
+              height={14}
+              className="rounded-sm object-contain"
             />
           );
 

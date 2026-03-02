@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -92,7 +93,7 @@ export function VideoChat({ videoId }) {
             {/* Header */}
             <div className="p-4 border-b border-border/50 bg-card/50 backdrop-blur-sm flex items-center space-x-3">
                 <div className="bg-primary/10 p-2 rounded-full flex items-center justify-center">
-                    <img src="/Google-Gemini-Logo-Transparent-thumb.png" alt="Gemini AI" className="h-5 w-5 object-contain" />
+                    <Image src="/Google-Gemini-Logo-Transparent-thumb.png" alt="Gemini AI" width={20} height={20} className="object-contain" />
                 </div>
                 <div>
                     <h3 className="font-semibold text-foreground leading-none">Chat with Video</h3>
@@ -107,7 +108,7 @@ export function VideoChat({ videoId }) {
                         <Avatar className="h-8 w-8 shrink-0 mt-1">
                             {m.role === "assistant" ? (
                                 <>
-                                    <AvatarFallback className="bg-primary/20 flex items-center justify-center"><img src="/Google-Gemini-Logo-Transparent-thumb.png" alt="Gemini" className="h-4 w-4 object-contain" /></AvatarFallback>
+                                    <AvatarFallback className="bg-primary/20 flex items-center justify-center"><Image src="/Google-Gemini-Logo-Transparent-thumb.png" alt="Gemini" width={16} height={16} className="object-contain" /></AvatarFallback>
                                 </>
                             ) : (
                                 <>
@@ -124,7 +125,7 @@ export function VideoChat({ videoId }) {
                 {isLoading && (
                     <div className="flex space-x-4">
                         <Avatar className="h-8 w-8 shrink-0 mt-1">
-                            <AvatarFallback className="bg-primary/20 flex items-center justify-center"><img src="/Google-Gemini-Logo-Transparent-thumb.png" alt="Gemini" className="h-4 w-4 object-contain" /></AvatarFallback>
+                            <AvatarFallback className="bg-primary/20 flex items-center justify-center"><Image src="/Google-Gemini-Logo-Transparent-thumb.png" alt="Gemini" width={16} height={16} className="object-contain" /></AvatarFallback>
                         </Avatar>
                         <div className="p-4 rounded-2xl bg-secondary/50 rounded-tl-sm flex items-center space-x-2">
                             <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />

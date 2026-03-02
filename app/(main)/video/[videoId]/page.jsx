@@ -63,7 +63,7 @@ export default function Page() {
     };
 
     verifyAndLoad();
-  }, [rawVideoId]);
+  }, [rawVideoId, router]);
 
   if (isInvalid) {
     return (

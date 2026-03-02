@@ -30,7 +30,7 @@ function SearchFormContent() {
   );
 
   return (
-    <form className="relative flex items-center w-full max-w-[180px] sm:max-w-xs md:max-w-sm group" onSubmit={handleSearch}>
+    <form className="tour-search relative flex items-center w-full max-w-[180px] sm:max-w-xs md:max-w-sm group" onSubmit={handleSearch}>
       <div className="absolute left-3 flex items-center justify-center pointer-events-none text-muted-foreground group-focus-within:text-foreground transition-colors">
         {isLoading ? (
           <Loader2 className="h-4 w-4 animate-spin" />
