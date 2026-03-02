@@ -163,7 +163,7 @@ export default function Page() {
                 </div>
               )}
               {activeTab === 'chat' && <VideoChat videoId={realVideoId} />}
-              {activeTab === 'notes' && <VideoNotes videoId={realVideoId} channelTitle={info?.channelTitle} />}
+              {activeTab === 'notes' && <VideoNotes videoId={realVideoId} secureVideoId={rawVideoId} channelTitle={info?.channelTitle} />}
 
             </div>
             <div>

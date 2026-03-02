@@ -7,7 +7,7 @@ import { Bookmark, MessageSquare, ThumbsUp, FileText, Loader2 } from "lucide-rea
 import Image from "next/image";
 import Link from "next/link";
 
-export function VideoNotes({ videoId, channelTitle }) {
+export function VideoNotes({ videoId, secureVideoId, channelTitle }) {
     const [notes, setNotes] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -87,7 +87,7 @@ export function VideoNotes({ videoId, channelTitle }) {
                                     </span>
                                 </div>
 
-                                <Link href={`/notes/${note.id}`} className="group block space-y-1 sm:space-y-1.5 mb-2 sm:mb-3">
+                                <Link href={`/video/${secureVideoId}/notes/${note.id}`} className="group block space-y-1 sm:space-y-1.5 mb-2 sm:mb-3">
                                     <h3 className="text-lg sm:text-xl font-bold leading-tight group-hover:text-primary transition-colors">
                                         {note.title}
                                     </h3>
@@ -118,7 +118,7 @@ export function VideoNotes({ videoId, channelTitle }) {
 
                             {/* Right side notes icon thumbnail */}
                             <div className="hidden sm:block shrink-0 w-[120px] sm:w-[160px] lg:w-[180px]">
-                                <Link href={`/notes/${note.id}`} className="block relative aspect-[4/3] w-full overflow-hidden rounded-md border border-border/20 bg-secondary/10 group shadow-sm flex items-center justify-center p-2">
+                                <Link href={`/video/${secureVideoId}/notes/${note.id}`} className="block relative aspect-[4/3] w-full overflow-hidden rounded-md border border-border/20 bg-secondary/10 group shadow-sm flex items-center justify-center p-2">
                                     <Image
                                         src="/notes-icon.png"
                                         alt="Notes Thumbnail"
