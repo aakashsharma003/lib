@@ -19,9 +19,9 @@ A platform built to make learning easy and collaborative. With Library, users ge
 - AI-powered filtering to keep content focused on education and block distractions.
 - Platform source icons to identify content origin at a glance.
 
-### 2. **AI Study Chat (Gemini)**
+### 2. **AI Study Chat (Groq)**
 - Ask any question about a video and get accurate, contextual answers.
-- Powered by Google Gemini with RAG (Retrieval Augmented Generation) for transcript-grounded responses.
+- Powered by Groq (Llama 3.3) with RAG (Retrieval Augmented Generation) for transcript-grounded responses.
 - Smart chunking and embedding pipeline for precise context retrieval.
 
 ### 3. **User-Generated Notes & Google Drive Sync**
@@ -58,7 +58,7 @@ A platform built to make learning easy and collaborative. With Library, users ge
 | **Backend** | Node.js, Prisma ORM |
 | **Database** | Neon (PostgreSQL) |
 | **Auth** | Clerk (Google OAuth) |
-| **AI** | Google Gemini API |
+| **AI** | Groq API (Llama 3.3) + Gemini Embeddings |
 | **APIs** | YouTube Data API, Kome Transcript API |
 | **Storage** | Google Drive API |
 | **Deployment** | Vercel |
@@ -86,6 +86,9 @@ A platform built to make learning easy and collaborative. With Library, users ge
    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
    CLERK_SECRET_KEY=
    NEXT_PUBLIC_GEMINI_API_KEY=
+   GROQ_API_KEY=
+   UPSTASH_REDIS_REST_URL=
+   UPSTASH_REDIS_REST_TOKEN=
    DATABASE_URL=
    CLERK_WEBHOOK_SECRET=
    YOUTUBE_TRANSCRIPT_URI=
