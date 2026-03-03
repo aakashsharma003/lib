@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Youtube, BookOpen, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
@@ -18,24 +18,99 @@ export function VideoFeed({ initialVideos = [], initialPageToken = null, searchQ
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [isBlocked, setIsBlocked] = useState(initialBlocked);
   const [loadingVideoId, setLoadingVideoId] = useState(null);
+  const [isSearching, setIsSearching] = useState(false);
+
+  // Rate limit queue state
+  const [isQueued, setIsQueued] = useState(false);
+  const pendingSearchRef = useRef(null);
+  const toastIdRef = useRef(null);
+  const countdownRef = useRef(null);
 
   const searchParams = useSearchParams();
   const router = useRouter();
   const { ref, inView } = useInView();
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (countdownRef.current) clearInterval(countdownRef.current);
+    };
+  }, []);
+
+  // Show a countdown toast and auto-retry when it reaches 0
+  const startQueueCountdown = (retrySeconds, query, token) => {
+    setIsQueued(true);
+    pendingSearchRef.current = { query, token };
+    let remaining = retrySeconds;
+
+    // Show initial toast
+    toastIdRef.current = toast.loading(
+      `Your request is in queue. Please wait ${remaining}s...`,
+      { duration: Infinity, id: 'rate-limit-queue' }
+    );
+
+    countdownRef.current = setInterval(() => {
+      remaining -= 1;
+      if (remaining <= 0) {
+        clearInterval(countdownRef.current);
+        countdownRef.current = null;
+        toast.dismiss('rate-limit-queue');
+
+        // Auto-retry
+        setIsQueued(false);
+        if (pendingSearchRef.current) {
+          const { query: q, token: t } = pendingSearchRef.current;
+          pendingSearchRef.current = null;
+          executeSearch(q, t).then((res) => {
+            if (res) {
+              setVideos(prev => t ? [...prev, ...res.items] : res.items);
+              setPageToken(res.nextPageToken);
+              setIsBlocked(!!res.blockedByAI);
+            }
+          });
+        }
+      } else {
+        // Update the existing toast with new countdown
+        toast.loading(
+          `Your request is in queue. Please wait ${remaining}s...`,
+          { id: 'rate-limit-queue' }
+        );
+      }
+    }, 1000);
+  };
+
+  // Execute search with rate limit handling
+  const executeSearch = async (query, pageToken = "") => {
+    setIsSearching(true);
+    try {
+      const res = await fetchVideos(query, pageToken);
+
+      if (res.rateLimited) {
+        startQueueCountdown(res.retryAfter || 30, query, pageToken);
+        return null;
+      }
+
+      return res;
+    } finally {
+      setIsSearching(false);
+    }
+  };
 
   // Handle fresh searches cleanly
   useEffect(() => {
     const currentSearchQuery = searchParams.get("search");
 
     if (currentSearchQuery !== null && currentSearchQuery !== searchQuery) {
-      // New search entirely, reset
-      fetchVideos(currentSearchQuery).then((res) => {
-        setVideos(res.items);
-        setPageToken(res.nextPageToken);
-        setIsBlocked(!!res.blockedByAI);
+      setIsSearching(true);
+      executeSearch(currentSearchQuery).then((res) => {
+        if (res) {
+          setVideos(res.items);
+          setPageToken(res.nextPageToken);
+          setIsBlocked(!!res.blockedByAI);
+        }
+        setIsSearching(false);
       });
     } else {
-      // Revert to initial SSR state if cleared or matching
       setVideos(initialVideos);
       setPageToken(initialPageToken);
       setIsBlocked(initialBlocked);
@@ -43,31 +118,33 @@ export function VideoFeed({ initialVideos = [], initialPageToken = null, searchQ
   }, [searchParams, searchQuery, initialVideos, initialPageToken, initialBlocked]);
 
   const loadMoreVideos = useCallback(async () => {
-    if (isLoadingMore || !pageToken) return;
+    if (isLoadingMore || !pageToken || isQueued) return;
     setIsLoadingMore(true);
 
     const currentSearchQuery = searchParams.get("search") || searchQuery || "";
     try {
-      const res = await fetchVideos(currentSearchQuery, pageToken);
-      if (res.items.length > 0) {
-        setVideos((prev) => [...prev, ...res.items]);
-        setPageToken(res.nextPageToken);
-      } else {
-        setPageToken(null);
+      const res = await executeSearch(currentSearchQuery, pageToken);
+      if (res) {
+        if (res.items.length > 0) {
+          setVideos((prev) => [...prev, ...res.items]);
+          setPageToken(res.nextPageToken);
+        } else {
+          setPageToken(null);
+        }
       }
     } catch (e) {
       console.error("Failed to load more videos:", e);
     } finally {
       setIsLoadingMore(false);
     }
-  }, [isLoadingMore, pageToken, searchParams, searchQuery]);
+  }, [isLoadingMore, pageToken, searchParams, searchQuery, isQueued]);
 
   // Trigger load more when scroll reaches bottom trigger
   useEffect(() => {
-    if (inView) {
+    if (inView && !isQueued) {
       loadMoreVideos();
     }
-  }, [inView, loadMoreVideos]);
+  }, [inView, loadMoreVideos, isQueued]);
 
   if (isBlocked) {
     return (
@@ -89,6 +166,14 @@ export function VideoFeed({ initialVideos = [], initialPageToken = null, searchQ
 
   return (
     <div className="flex flex-col space-y-8">
+
+      {/* Search Loading State */}
+      {isSearching && videos.length === 0 && !isQueued && (
+        <div className="flex flex-col items-center justify-center py-20">
+          <Loader2 className="w-8 h-8 text-primary animate-spin mb-4" />
+          <p className="text-sm text-muted-foreground font-medium animate-pulse">Searching for videos...</p>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {videos?.map((video, index) => {
@@ -117,8 +202,17 @@ export function VideoFeed({ initialVideos = [], initialPageToken = null, searchQ
                   style={{ objectFit: 'cover' }}
                   className="transition-transform duration-500 group-hover:scale-105"
                 />
-                <div className="absolute absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                  {isNavigating && <Loader2 className="w-8 h-8 text-primary animate-spin" />}
+                <div className={`absolute inset-0 bg-black/50 flex items-center justify-center transition-opacity duration-300 ${isNavigating ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                  {isNavigating ? (
+                    <div className="flex flex-col items-center gap-2">
+                      <Loader2 className="w-8 h-8 text-white animate-spin" />
+                      <span className="text-xs text-white/80 font-medium animate-pulse">Opening video...</span>
+                    </div>
+                  ) : (
+                    <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                      <svg className="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+                    </div>
+                  )}
                 </div>
                 <div className="tour-platform-tag absolute bottom-2 right-2 bg-background/90 backdrop-blur-sm p-1 rounded shadow-sm">
                   {platformIcon}
@@ -181,7 +275,7 @@ export function VideoFeed({ initialVideos = [], initialPageToken = null, searchQ
           {isLoadingMore ? (
             <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
           ) : (
-            <div className="h-6" /> // Placeholder to maintain height
+            <div className="h-6" />
           )}
         </div>
       )}

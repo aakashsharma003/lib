@@ -1,4 +1,5 @@
 import { askOpenAI } from "./openAI";
+import { checkRateLimit } from "./rate-limiter";
 
 export const getRelatedVideos = async (relatedContnt) => {
   if (!relatedContnt) {
@@ -81,10 +82,13 @@ export const fetchVideos = async (query, pageToken = "") => {
   const apiURL = process.env.NEXT_PUBLIC_YOUTUBE_API_URL;
 
   try {
-    // 1. PRE-SEARCH AI FILTERING
-    // Ask Gemini if the query is educational before wasting YouTube API quotas
+    // 1. PRE-SEARCH AI FILTERING (rate-limited via Groq)
+    // Ask Groq AI if the query is educational before wasting YouTube API quotas
     if (query) {
       try {
+        // Check Groq rate limit before calling AI filter
+        await checkRateLimit('groq');
+
         const validationPrompt = `Evaluate this search query: "${query}". 
 Is this query related to education, programming, technology, tutorials, courses, learning, or self-improvement? 
 Respond with exactly one word: "YES" or "NO".`;
@@ -96,12 +100,26 @@ Respond with exactly one word: "YES" or "NO".`;
           return {
             items: [],
             nextPageToken: null,
-            blockedByAI: true // Signal to frontend to show the empty/blocked state
+            blockedByAI: true,
+            rateLimited: false,
           };
         }
       } catch (validationErr) {
+        // If rate limited, bubble up to UI
+        if (validationErr.message.includes('Rate limit exceeded')) {
+          const retryMatch = validationErr.message.match(/wait (\d+) seconds/);
+          const retryAfter = retryMatch ? parseInt(retryMatch[1]) : 30;
+          console.warn(`[AI Filter] Groq rate limit hit. Retry in ${retryAfter}s`);
+          return {
+            items: [],
+            nextPageToken: null,
+            blockedByAI: false,
+            rateLimited: true,
+            retryAfter,
+          };
+        }
         console.error("AI Search Validation Error:", validationErr);
-        // Fail open: if Gemini fails, let the search proceed to YouTube
+        // Fail open: if Groq fails for other reasons, let the search proceed to YouTube
       }
     }
 
@@ -217,11 +235,12 @@ ${videoList}`;
     return {
       items: finalItems,
       nextPageToken: data.nextPageToken || null,
-      blockedByAI: false
+      blockedByAI: false,
+      rateLimited: false,
     };
   } catch (error) {
     console.error("Failed to fetch videos:", error);
-    return { items: [], nextPageToken: null, blockedByAI: false };
+    return { items: [], nextPageToken: null, blockedByAI: false, rateLimited: false };
   }
 };
 
