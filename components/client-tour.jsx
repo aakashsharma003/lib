@@ -34,7 +34,7 @@ const FEATURES = [
         color: "text-emerald-500",
         bg: "bg-emerald-500/10",
         label: "AI Study Chat",
-        desc: "Ask anything about any video with Gemini AI",
+        desc: "Ask anything about any video with Groq AI",
     },
     {
         icon: Paperclip,
@@ -44,6 +44,15 @@ const FEATURES = [
         desc: "Attach notes to videos and help the community",
     },
 ];
+
+// ─── Check if user just signed up (within last 10 minutes) ────────────────────
+function isNewUser(user) {
+    if (!user?.createdAt) return false;
+    const createdAt = new Date(user.createdAt).getTime();
+    const now = Date.now();
+    const tenMinutes = 10 * 60 * 1000;
+    return now - createdAt < tenMinutes;
+}
 
 // ─── Welcome Modal ────────────────────────────────────────────────────────────
 function WelcomeModal({ userName, onStart }) {
@@ -158,16 +167,21 @@ export function ClientTour() {
     useEffect(() => {
         if (!isLoaded || !user) return;
 
+        // Already completed the full tour — never show again
         const hasFinishedTour = user.publicMetadata?.hasFinishedTour;
-        if (hasFinishedTour) return; // Entirely done — show nothing
+        if (hasFinishedTour) return;
 
+        // Only trigger for brand-new signups (within last 10 min) or users mid-tour
         const homeTourDone = localStorage.getItem("lib_home_tour_done") === "1";
+        const freshSignup = isNewUser(user);
 
-        if (pathname === "/home" && !homeTourDone) {
+        // Phase A: Home page welcome + tour (only for fresh signups who haven't done it)
+        if (pathname === "/home" && !homeTourDone && freshSignup) {
             const t = setTimeout(() => setShowWelcome(true), 1200);
             return () => clearTimeout(t);
         }
 
+        // Phase B: Video page tour (only if home tour is done — they're mid-tour flow)
         if (pathname?.includes("/video/") && homeTourDone && Joyride) {
             const t = setTimeout(() => setRunVideoTour(true), 2500);
             return () => clearTimeout(t);
@@ -212,7 +226,7 @@ export function ClientTour() {
             target: ".tour-search",
             content: (
                 <div>
-                    <p className="font-bold text-base mb-1">🔍 Search Anything</p>
+                    <p className="font-bold text-base mb-1">Search Anything</p>
                     <p className="text-sm text-muted-foreground leading-relaxed">
                         Type any topic — Python, design, finance — and get curated educational
                         videos. Our AI filters out non-educational content automatically.
@@ -226,7 +240,7 @@ export function ClientTour() {
             target: ".tour-platform-tag",
             content: (
                 <div>
-                    <p className="font-bold text-base mb-1">🏷️ Platform Source Icon</p>
+                    <p className="font-bold text-base mb-1">Platform Source Icon</p>
                     <p className="text-sm text-muted-foreground leading-relaxed">
                         This badge shows where the video comes from — YouTube, Udemy, Coursera
                         and more. Library unifies learning content from every major platform.
@@ -242,9 +256,9 @@ export function ClientTour() {
             target: ".tour-ask-ai",
             content: (
                 <div>
-                    <p className="font-bold text-base mb-1">🤖 Ask AI Anything</p>
+                    <p className="font-bold text-base mb-1">Ask AI Anything</p>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                        Powered by Gemini AI. Ask any question about this video and get
+                        Powered by Groq AI. Ask any question about this video and get
                         answers grounded in the actual transcript — no hallucinations.
                     </p>
                 </div>
@@ -256,7 +270,7 @@ export function ClientTour() {
             target: ".tour-library-management",
             content: (
                 <div>
-                    <p className="font-bold text-base mb-1">📚 Your Notes Library</p>
+                    <p className="font-bold text-base mb-1">Your Notes Library</p>
                     <p className="text-sm text-muted-foreground leading-relaxed">
                         View and manage all notes you&apos;ve saved for this video. Notes are
                         synced from Google Drive and organized by video.
@@ -269,7 +283,7 @@ export function ClientTour() {
             target: ".tour-attach-note",
             content: (
                 <div>
-                    <p className="font-bold text-base mb-1">📎 Attach Your Notes</p>
+                    <p className="font-bold text-base mb-1">Attach Your Notes</p>
                     <p className="text-sm text-muted-foreground leading-relaxed">
                         Upload your study notes here. On first use, you&apos;ll be asked to{" "}
                         <strong>grant Google Drive access</strong> — this is a one-time
@@ -323,7 +337,7 @@ export function ClientTour() {
 
     return (
         <>
-            {/* Welcome modal — shown once on /home for new users */}
+            {/* Welcome modal — shown once on /home for brand-new signups */}
             {showWelcome && (
                 <WelcomeModal
                     userName={user?.fullName || user?.firstName || ""}
