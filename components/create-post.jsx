@@ -12,7 +12,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Switch } from "@/components/ui/switch"
 import { useUser } from "@clerk/nextjs"
 
-export function CreatePost({ videoId }) {
+export function CreatePost({ videoId, secureVideoId }) {
   const router = useRouter();
   const { user } = useUser();
   const [isOpen, setIsOpen] = useState(false);
@@ -201,7 +201,7 @@ export function CreatePost({ videoId }) {
       }
 
       if (res.ok) {
-        router.push(`/video/${videoId}/notes/${data.noteId}`);
+        router.push(`/video/${secureVideoId}/notes/${data.noteId}`);
         setNote("");
         setNoteTitle("");
         setDriveLink("");

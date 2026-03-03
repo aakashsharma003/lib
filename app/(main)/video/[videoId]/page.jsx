@@ -9,12 +9,14 @@ import { VideoPlayer } from "@/components/video-player"
 import { CreatePost } from "@/components/create-post"
 import { VideoChat } from "@/components/video-chat"
 import { VideoNotes } from "@/components/video-notes"
+import { LiveCounter } from "@/components/live-counter"
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { getInfoWithVideoId, getRelatedVideos } from "@/app/utils/youtube"
 import { verifySecureVideoLink } from "@/app/actions/video"
 import { Loader2 } from "lucide-react"
 import { toast } from "sonner"
+import { useUser } from "@clerk/nextjs"
 
 
 export default function Page() {
@@ -26,6 +28,22 @@ export default function Page() {
   const [realVideoId, setRealVideoId] = useState(null);
   const [isInvalid, setIsInvalid] = useState(false);
   const [isRestricted, setIsRestricted] = useState(false);
+  const { user } = useUser();
+
+  // Generate or retrieve a persistent viewer ID for the live counter
+  const [viewerId, setViewerId] = useState(null);
+  useEffect(() => {
+    if (user?.id) {
+      setViewerId(user.id);
+    } else {
+      let guestId = localStorage.getItem('lib_guest_id');
+      if (!guestId) {
+        guestId = crypto.randomUUID();
+        localStorage.setItem('lib_guest_id', guestId);
+      }
+      setViewerId(guestId);
+    }
+  }, [user]);
 
   useEffect(() => {
     if (!rawVideoId) return;
@@ -114,6 +132,13 @@ export default function Page() {
             <div className="lg:col-span-2 space-y-6">
               <VideoPlayer videoId={realVideoId} />
 
+              {/* Live Viewer Counter */}
+              {viewerId && (
+                <div className="flex items-center justify-between">
+                  <LiveCounter videoId={realVideoId} userId={viewerId} />
+                </div>
+              )}
+
               {/* Tab Navigation */}
               <div className="flex flex-wrap gap-2 pt-2 border-b border-border/10 pb-4">
                 <Button
@@ -172,7 +197,7 @@ export default function Page() {
           </div>
         </div>
       </main>
-      <CreatePost videoId={realVideoId} />
+      <CreatePost videoId={realVideoId} secureVideoId={rawVideoId} />
     </div>
   );
 }
