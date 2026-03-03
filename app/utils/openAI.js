@@ -1,81 +1,71 @@
-import {
-  GoogleGenerativeAI,
-  HarmCategory,
-  HarmBlockThreshold,
-} from "@google/generative-ai";
+import { checkRateLimit } from './rate-limiter';
 
-const MODEL_NAME = "gemini-3-flash-preview";
-const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+const GROQ_MODEL = "llama-3.3-70b-versatile";
+const GROQ_API_KEY = process.env.GROQ_API_KEY;
+const GEMINI_API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
 
+/**
+ * Ask Groq LLM a question using their OpenAI-compatible chat completions API.
+ */
 export async function askOpenAI(prompt) {
   try {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent`;
+    // Rate limit check: Groq
+    await checkRateLimit('groq');
+
+    const url = 'https://api.groq.com/openai/v1/chat/completions';
 
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-goog-api-key': API_KEY,
+        'Authorization': `Bearer ${GROQ_API_KEY}`,
       },
       body: JSON.stringify({
-        contents: [
+        model: GROQ_MODEL,
+        messages: [
           {
-            parts: [{ text: prompt }]
+            role: 'user',
+            content: prompt,
           }
         ],
-        generationConfig: {
-          temperature: 0.2, // Lower temperature for more deterministic filtering
-          topK: 1,
-          topP: 1,
-          maxOutputTokens: 2048,
-        },
-        safetySettings: [
-          {
-            category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-          },
-          {
-            category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-          },
-          {
-            category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-          },
-          {
-            category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-            threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-          },
-        ]
+        temperature: 0.2,
+        max_tokens: 2048,
+        top_p: 1,
       })
     });
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
-      console.error("Gemini API Error Response:", response.status, errorData);
-      throw new Error(`Gemini API returned status: ${response.status}`);
+      console.error("Groq API Error Response:", response.status, errorData);
+      throw new Error(`Groq API returned status: ${response.status}`);
     }
 
     const data = await response.json();
-    const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    const rawText = data?.choices?.[0]?.message?.content;
 
     return rawText;
   } catch (error) {
-    console.error("error occured at gemini directly", error);
+    console.error("error occurred at Groq API", error);
     return null; // Return null so the calling function can handle the failure gracefully
   }
 }
 
 
-
+/**
+ * Generate an embedding using Google Gemini (Groq does not support embeddings).
+ * Rate-limited to protect free-tier quotas.
+ */
 export async function getEmbedding(text) {
   try {
+    // Rate limit check: Gemini Embedding
+    await checkRateLimit('gemini-embedding');
+
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent`;
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-goog-api-key': process.env.NEXT_PUBLIC_GEMINI_API_KEY,
+        'x-goog-api-key': GEMINI_API_KEY,
       },
       body: JSON.stringify({
         model: 'models/gemini-embedding-001',
@@ -93,7 +83,7 @@ export async function getEmbedding(text) {
     const data = await response.json();
     return data?.embedding?.values || null;
   } catch (err) {
-    console.error("Embedding API Error via Vercel AI SDK:", err.message);
+    console.error("Embedding API Error:", err.message);
     return null;
   }
 }

@@ -3,10 +3,11 @@
 import { askOpenAI, getEmbedding } from "@/app/utils/openAI";
 import { getYoutubeTranscript } from "@/app/utils/transcript";
 import { generateText } from 'ai';
-import { createGoogleGenerativeAI } from '@ai-sdk/google';
+import { createGroq } from '@ai-sdk/groq';
+import { checkRateLimit } from '@/app/utils/rate-limiter';
 
-const google = createGoogleGenerativeAI({
-    apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY
+const groq = createGroq({
+    apiKey: process.env.GROQ_API_KEY
 });
 
 // In-memory cache for document chunks and embeddings so we don't re-embed on every message
@@ -63,17 +64,17 @@ async function retrieveContext(videoId, query) {
         const chunks = splitIntoChunks(transcript, 1200, 200);
         console.log(`[RAG Pipeline] Partitioned transcript into ${chunks.length} chunks.`);
 
-        // Embed all chunks (sequential MVP)
+        // Embed all chunks (sequential to respect rate limits)
         const limitedChunks = chunks.slice(0, 50);
         if (chunks.length > 50) {
-            console.log(`[RAG Pipeline] Truncating to 50 chunks to satisfy free-tier rate limits.`);
+            console.log(`[RAG Pipeline] Truncating to 50 chunks to respect rate limits.`);
         }
 
         const embeddedChunks = [];
-        console.log(`[RAG Pipeline] Embedding chunks. This may take a moment...`);
+        console.log(`[RAG Pipeline] Embedding chunks with Gemini (rate-limited via Redis)...`);
         console.time(`[RAG Pipeline] Embedding Chunks`);
 
-        // Process sequentially to avoid Gemini API free-tier rate limits (429 Too Many Requests)
+        // Process sequentially — Redis rate limiter handles the pacing
         for (let i = 0; i < limitedChunks.length; i++) {
             try {
                 const chunk = limitedChunks[i];
@@ -86,10 +87,16 @@ async function retrieveContext(videoId, query) {
                     });
                 }
 
-                // Small synthetic delay to satisfy rate limit tokens per minute
-                await new Promise(resolve => setTimeout(resolve, 300));
+                // Small synthetic delay between embedding calls
+                await new Promise(resolve => setTimeout(resolve, 200));
 
             } catch (err) {
+                if (err.message.includes('Rate limit exceeded')) {
+                    console.warn(`[RAG Pipeline] Gemini embedding rate limit hit at chunk ${i}. Waiting 10s...`);
+                    await new Promise(resolve => setTimeout(resolve, 10000));
+                    i--; // Retry this chunk
+                    continue;
+                }
                 console.error("[RAG Pipeline] Failed to embed chunk", i, err);
             }
         }
@@ -145,14 +152,17 @@ export async function chatWithVideo(videoId, history, newMessage) {
         const relevantContext = await retrieveContext(videoId, newMessage);
 
         if (relevantContext === null) {
-            console.log(`[Video Chat Action] ERROR: Context retrieval failed. Bypassing Gemini API call.`);
+            console.log(`[Video Chat Action] ERROR: Context retrieval failed. Bypassing Groq API call.`);
             console.timeEnd(`[Video Chat Action] Total Request Time`);
             console.log(`========================================\n`);
             return "I'm sorry, I couldn't access this video's content. The instructor might not have enabled closed captions, or the video might be restricted.";
         }
 
-        console.log(`[Video Chat Action] Calling Gemini Generation API with context...`);
-        console.time(`[Video Chat Action] Gemini LLM Generation`);
+        // Rate limit check: Groq generation
+        await checkRateLimit('groq');
+
+        console.log(`[Video Chat Action] Calling Groq Generation API with context...`);
+        console.time(`[Video Chat Action] Groq LLM Generation`);
         let prompt = `You are a helpful educational AI assistant answering a user's question about a specific video.
 Here is the most relevant retrieved transcript context to answer the question:
 """
@@ -167,13 +177,13 @@ User's new question: ${newMessage}
 Answer the user's question directly, clearly, and concisely based ONLY on the retrieved context above. If the answer is not in the context, mention that you can only answer based on the video context. Do not use markdown headers or bolding excessively, keep it conversational.`;
 
         const { text: response } = await generateText({
-            model: google('gemini-3-flash-preview'),
+            model: groq('llama-3.3-70b-versatile'),
             prompt: prompt
         });
-        console.timeEnd(`[Video Chat Action] Gemini LLM Generation`);
+        console.timeEnd(`[Video Chat Action] Groq LLM Generation`);
 
         if (!response) {
-            console.log(`[Video Chat Action] ERROR: Gemini returned empty response.`);
+            console.log(`[Video Chat Action] ERROR: Groq returned empty response.`);
             return "I'm sorry, I couldn't generate a response at this moment. Please try again.";
         }
 
@@ -183,6 +193,9 @@ Answer the user's question directly, clearly, and concisely based ONLY on the re
 
         return response;
     } catch (error) {
+        if (error.message.includes('Rate limit exceeded')) {
+            return "I'm currently handling too many requests. Please wait a moment and try again.";
+        }
         console.error("[Video Chat Action] Critical Error:", error);
         return "I encountered an error while trying to answer your question. Please ensure the video has English closed captions enabled.";
     }
