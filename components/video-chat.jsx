@@ -1,5 +1,6 @@
 "use client";
 
+
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -125,7 +126,7 @@ export function VideoChat({ videoId }) {
                 {isLoading && (
                     <div className="flex space-x-4">
                         <Avatar className="h-8 w-8 shrink-0 mt-1">
-                            <AvatarFallback className="bg-primary/20 flex items-center justify-center"><Image src="/Google-Gemini-Logo-Transparent-thumb.png" alt="Gemini" width={16} height={16} className="object-contain" /></AvatarFallback>
+                            <AvatarFallback className="bg-primary/20 flex items-center justify-center text-sm">🤖</AvatarFallback>
                         </Avatar>
                         <div className="p-4 rounded-2xl bg-secondary/50 rounded-tl-sm flex items-center space-x-2">
                             <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
