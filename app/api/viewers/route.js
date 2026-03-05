@@ -7,7 +7,8 @@ const redis = new Redis({
 
 export async function POST(req) {
     try {
-        const { videoId, userId } = await req.json();
+        const body = await req.json();
+        const { videoId, userId, action } = body;
 
         if (!videoId || !userId) {
             return Response.json({ count: 1 }, { status: 400 });
@@ -15,16 +16,18 @@ export async function POST(req) {
 
         const setKey = `live_viewers:${videoId}`;
 
-        // 1. Add user to the video's viewer Set (SADD deduplicates automatically)
+        // Handle "leave" action (used by sendBeacon on page unload)
+        if (action === "leave") {
+            await redis.srem(setKey, userId);
+            await redis.del(`heartbeat:${videoId}:${userId}`);
+            const count = await redis.scard(setKey);
+            return Response.json({ count, success: true });
+        }
+
+        // Default: "join" action — add user to viewer set
         await redis.sadd(setKey, userId);
-
-        // 2. Set a heartbeat key that expires in 35s if not refreshed
         await redis.set(`heartbeat:${videoId}:${userId}`, "1", { ex: 35 });
-
-        // 3. Set TTL on the viewer set itself (auto-cleanup after 24h of inactivity)
         await redis.expire(setKey, 86400);
-
-        // 4. Get total unique viewer count
         const count = await redis.scard(setKey);
 
         return Response.json({ count });

@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -9,67 +9,81 @@
 
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
- 
+
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
- 
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
- 
+
+    --primary: 220 13% 11%;
+    /* #111827 - dark charcoal for buttons */
+    --primary-foreground: 208 100% 97%;
+    /* #f0f8ff - Alice Blue */
+
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
- 
+
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
- 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
- 
+
+    --accent: 208 100% 97%;
+    /* #f0f8ff - Alice Blue accent */
+    --accent-foreground: 220 13% 11%;
+
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
- 
+    --ring: 220 13% 11%;
+
     --radius: 0.5rem;
   }
- 
+
   .dark {
-    --background: 0 0% 0%; /* Pure Black Background */
-    --foreground: 0 0% 100%; /* Pure White Text */
- 
-    --card: 0 0% 5%;
-    --card-foreground: 0 0% 100%;
- 
-    --popover: 0 0% 5%;
-    --popover-foreground: 0 0% 100%;
- 
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
- 
-    --secondary: 0 0% 15%;
-    --secondary-foreground: 0 0% 100%;
- 
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 65%; /* Grey Text for Descriptions */
- 
-    --accent: 0 0% 15%;
-    --accent-foreground: 0 0% 100%;
- 
+    --background: 240 20% 4%;
+    /* #0a0a0f - Deep charcoal-black */
+    --foreground: 214 32% 91%;
+    /* #e2e8f0 - Soft white text */
+
+    --card: 220 43% 11%;
+    /* #111827 - Dark navy-grey cards */
+    --card-foreground: 214 32% 91%;
+    /* #e2e8f0 */
+
+    --popover: 222 47% 9%;
+    /* #0f1117 - Dark popover */
+    --popover-foreground: 214 32% 91%;
+
+    --primary: 217 91% 60%;
+    /* Vibrant blue for primary actions */
+    --primary-foreground: 220 43% 11%;
+
+    --secondary: 217 33% 17%;
+    /* #1e293b - Subtle dark secondary */
+    --secondary-foreground: 214 32% 91%;
+
+    --muted: 217 33% 17%;
+    /* #1e293b */
+    --muted-foreground: 215 20% 65%;
+    /* #94a3b8 - Cool grey descriptions */
+
+    --accent: 217 33% 17%;
+    --accent-foreground: 214 32% 91%;
+
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 100%;
- 
-    --border: 0 0% 20%;
-    --input: 0 0% 20%;
-    --ring: 0 0% 30%;
+    --destructive-foreground: 214 32% 91%;
+
+    --border: 217 33% 17%;
+    /* #1e293b - Slate borders */
+    --input: 217 33% 17%;
+    --ring: 217 91% 60%;
   }
 }
- 
+
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -100,4 +114,3 @@
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-gray-400 dark:bg-gray-500;
 }
-

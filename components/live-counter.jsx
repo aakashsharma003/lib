@@ -31,13 +31,37 @@ export function LiveCounter({ videoId, userId }) {
             }
         };
 
+        const leavePresence = () => {
+            // sendBeacon always sends POST, so we use an action field to distinguish
+            const payload = JSON.stringify({ videoId, userId, action: "leave" });
+            if (navigator.sendBeacon) {
+                navigator.sendBeacon("/api/viewers", new Blob([payload], { type: "application/json" }));
+            } else {
+                // Fallback for older browsers
+                fetch("/api/viewers", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: payload,
+                    keepalive: true,
+                }).catch(() => { });
+            }
+        };
+
         // Initial call
         updatePresence();
 
         // Heartbeat every 25 seconds
         const interval = setInterval(updatePresence, 25000);
 
-        return () => clearInterval(interval);
+        // Listen for tab close / navigation away
+        window.addEventListener("beforeunload", leavePresence);
+
+        return () => {
+            clearInterval(interval);
+            window.removeEventListener("beforeunload", leavePresence);
+            // Also fire when React unmounts (e.g., navigating to another page within the app)
+            leavePresence();
+        };
     }, [videoId, userId]);
 
     const formatCount = (count) => {

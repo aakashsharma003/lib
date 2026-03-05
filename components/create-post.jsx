@@ -18,7 +18,7 @@ export function CreatePost({ videoId, secureVideoId }) {
   const [isOpen, setIsOpen] = useState(false);
   const [note, setNote] = useState("");
   const [noteTitle, setNoteTitle] = useState("");
-  const [attachmentType, setAttachmentType] = useState("drive");
+  const [attachmentType, setAttachmentType] = useState("upload");
   const [driveLink, setDriveLink] = useState("");
   const [file, setFile] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -307,7 +307,7 @@ export function CreatePost({ videoId, secureVideoId }) {
                   <div className="mt-3 p-3 bg-muted rounded-md border border-border">
                     <div className="flex flex-col space-y-2">
                       <span className="text-sm font-semibold text-green-600">✓ Uploaded successfully</span>
-                      <Input value={uploadedLink} readOnly className="text-xs bg-white" />
+                      <Input value={uploadedLink} readOnly className="text-xs bg-background text-foreground" />
 
                       <div className="flex items-center space-x-3 mt-4 mb-2">
                         <Switch

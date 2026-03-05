@@ -10,7 +10,8 @@ import { CreatePost } from "@/components/create-post"
 import { VideoChat } from "@/components/video-chat"
 import { VideoNotes } from "@/components/video-notes"
 import { LiveCounter } from "@/components/live-counter"
-import { useEffect, useState } from "react"
+import { CommandPalette } from "@/components/command-palette"
+import { useEffect, useState, useCallback } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { getInfoWithVideoId, getRelatedVideos } from "@/app/utils/youtube"
 import { verifySecureVideoLink } from "@/app/actions/video"
@@ -29,6 +30,21 @@ export default function Page() {
   const [isInvalid, setIsInvalid] = useState(false);
   const [isRestricted, setIsRestricted] = useState(false);
   const { user } = useUser();
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+
+  // Ctrl+F / Ctrl+K keyboard shortcut for command palette
+  const handleGlobalKeyDown = useCallback((e) => {
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'k' || e.key === 'F' || e.key === 'K')) {
+      e.preventDefault();
+      e.stopPropagation();
+      setIsCommandPaletteOpen(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener('keydown', handleGlobalKeyDown, true);
+    return () => document.removeEventListener('keydown', handleGlobalKeyDown, true);
+  }, [handleGlobalKeyDown]);
 
   // Generate or retrieve a persistent viewer ID for the live counter
   const [viewerId, setViewerId] = useState(null);
@@ -50,6 +66,20 @@ export default function Page() {
 
     const verifyAndLoad = async () => {
       try {
+        // Check sessionStorage for cached data first
+        const cacheKey = `video-data-${rawVideoId}`;
+        const cached = sessionStorage.getItem(cacheKey);
+        if (cached) {
+          const { videoId: cachedId, info: cachedInfo, videos: cachedVideos, timestamp } = JSON.parse(cached);
+          // Use cache if less than 30 minutes old
+          if (Date.now() - timestamp < 30 * 60 * 1000) {
+            setRealVideoId(cachedId);
+            setInfo(cachedInfo);
+            setVideo(cachedVideos);
+            return;
+          }
+        }
+
         // 1. Decrypt and verify DB entry
         const decryptedId = await verifySecureVideoLink(rawVideoId);
         if (!decryptedId) {
@@ -71,9 +101,22 @@ export default function Page() {
 
         setInfo(videoInfo);
 
+        let relatedVideos = null;
         if (videoInfo) {
-          const resp = await getRelatedVideos(`${videoInfo.title} ${videoInfo.channelTitle}`);
-          setVideo(resp);
+          relatedVideos = await getRelatedVideos(`${videoInfo.title} ${videoInfo.channelTitle}`);
+          setVideo(relatedVideos);
+        }
+
+        // Cache in sessionStorage
+        try {
+          sessionStorage.setItem(cacheKey, JSON.stringify({
+            videoId: decryptedId,
+            info: videoInfo,
+            videos: relatedVideos,
+            timestamp: Date.now()
+          }));
+        } catch (e) {
+          // sessionStorage might be full — ignore
         }
       } catch (e) {
         setIsInvalid(true);
@@ -144,14 +187,20 @@ export default function Page() {
                 <Button
                   variant={activeTab === 'overview' ? 'default' : 'outline'}
                   onClick={() => setActiveTab('overview')}
-                  className="rounded-full px-5 hover:bg-secondary/60 border-border/50"
+                  className={`rounded-full px-5 border-border/50 transition-all ${activeTab === 'overview'
+                    ? 'bg-[#111827] text-[#f0f8ff] hover:bg-[#1f2937]'
+                    : 'hover:bg-secondary/60'
+                    }`}
                 >
                   Overview
                 </Button>
                 <Button
                   variant={activeTab === 'chat' ? 'default' : 'outline'}
                   onClick={() => setActiveTab('chat')}
-                  className="tour-ask-ai rounded-full px-5 hover:bg-secondary/60 border-border/50"
+                  className={`tour-ask-ai rounded-full px-5 border-border/50 transition-all ${activeTab === 'chat'
+                    ? 'bg-[#111827] text-[#f0f8ff] hover:bg-[#1f2937]'
+                    : 'hover:bg-secondary/60'
+                    }`}
                 >
                   <MessageSquare className="mr-2 h-4 w-4" />
                   Ask Questions
@@ -173,7 +222,10 @@ export default function Page() {
                 <Button
                   variant={activeTab === 'notes' ? 'default' : 'outline'}
                   onClick={() => setActiveTab('notes')}
-                  className="tour-library-management rounded-full px-5 hover:bg-secondary/60 border-border/50"
+                  className={`tour-library-management rounded-full px-5 border-border/50 transition-all ${activeTab === 'notes'
+                    ? 'bg-[#111827] text-[#f0f8ff] hover:bg-[#1f2937]'
+                    : 'hover:bg-secondary/60'
+                    }`}
                 >
                   <Book className="mr-2 h-4 w-4" />
                   Notes
@@ -198,6 +250,14 @@ export default function Page() {
         </div>
       </main>
       <CreatePost videoId={realVideoId} secureVideoId={rawVideoId} />
+
+      {/* Command Palette Modal */}
+      {isCommandPaletteOpen && (
+        <CommandPalette
+          onClose={() => setIsCommandPaletteOpen(false)}
+          onJumpToNotes={() => setActiveTab('notes')}
+        />
+      )}
     </div>
   );
 }

@@ -48,6 +48,7 @@ model Post {
   content        String?
   attach_file    String?    // Optional file attachments
   category       Category   // Category enum
+  tags           String[]   @default([])
   created_at     DateTime   @default(now())
   updated_at     DateTime   @updatedAt
   del_status     Boolean    @default(false) // Soft delete capability

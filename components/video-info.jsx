@@ -35,14 +35,14 @@ export function VideoInfo({ info }) {
             <p className="text-xs text-muted-foreground mt-0.5">{formatCount(info?.subscriberCount || 237000)} subscribers</p>
           </div>
         </div>
-        <Button className="w-full sm:w-auto rounded-full font-semibold px-6 bg-blue-600 hover:bg-blue-700 text-white">Subscribe</Button>
+        <Button className="w-full sm:w-auto rounded-full font-semibold px-6 bg-[#111827] hover:bg-[#1f2937] text-[#f0f8ff]">Subscribe</Button>
       </div>
       <div className="mt-2 bg-secondary/30 p-4 rounded-xl border border-border/10 transition-all duration-300">
         <div className="flex flex-wrap items-center gap-2 mb-2">
           <span className="font-semibold text-sm text-foreground">{formatCount(info?.viewCount)} views</span>
           <span className="text-muted-foreground text-sm font-semibold">•</span>
           <span className="font-semibold text-sm text-foreground">{formatDate(info?.publishedAt)}</span>
-          <Badge variant="secondary" className="ml-auto bg-blue-100/50 text-blue-600 hover:bg-blue-200/50 dark:bg-blue-900/30 dark:text-blue-400 border-none transition-colors">#education</Badge>
+          <Badge variant="secondary" className="ml-auto bg-[#f0f8ff] text-[#111827] hover:bg-[#e0f0ff] dark:bg-[#1e293b] dark:text-[#94a3b8] border-none transition-colors">#education</Badge>
         </div>
         <p className={`text-sm text-foreground/90 whitespace-pre-wrap ${isDescriptionExpanded ? '' : 'line-clamp-3'}`}>
           {info?.description}

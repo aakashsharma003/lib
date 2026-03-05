@@ -22,24 +22,21 @@ export function UserActions() {
   return (
     <div className="flex flex-col">
       <div className="flex flex-wrap items-center gap-2 mt-4 pb-4">
-        <div className="flex items-center rounded-full bg-secondary/40">
-          <Button
-            variant="ghost"
-            onClick={handleLike}
-            className="rounded-l-full rounded-r-none px-4 hover:bg-secondary/60 h-9"
-          >
-            <ThumbsUp className={`mr-2 h-4 w-4 ${isLiked ? 'fill-current' : ''}`} />
-            <span className="font-medium text-sm">{isLiked ? '124K' : '123K'}</span>
-          </Button>
-          <div className="w-[1px] h-5 bg-border/50" />
-          <Button
-            variant="ghost"
-            onClick={handleDislike}
-            className="rounded-r-full rounded-l-none px-4 hover:bg-secondary/60 h-9"
-          >
-            <ThumbsDown className={`h-4 w-4 ${isDisliked ? 'fill-current' : ''}`} />
-          </Button>
-        </div>
+        <Button
+          variant="ghost"
+          onClick={handleLike}
+          className={`rounded-full bg-secondary/40 hover:bg-secondary/60 px-4 h-9 ${isLiked ? 'text-primary' : ''}`}
+        >
+          <ThumbsUp className="mr-2 h-4 w-4" />
+          <span className="font-medium text-sm">{isLiked ? '124K' : '123K'}</span>
+        </Button>
+        <Button
+          variant="ghost"
+          onClick={handleDislike}
+          className={`rounded-full bg-secondary/40 hover:bg-secondary/60 px-4 h-9 ${isDisliked ? 'text-destructive' : ''}`}
+        >
+          <ThumbsDown className="mr-2 h-4 w-4" />
+        </Button>
 
         <Button variant="ghost" className="rounded-full bg-secondary/40 hover:bg-secondary/60 px-4 h-9">
           <Share2 className="mr-2 h-4 w-4" />

@@ -4,14 +4,20 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { auth } from "@clerk/nextjs/server";
+import { NoteTags } from "@/components/note-tags";
 
-export default async function VideoNotePage({ params }) {
+export default async function VideoNotePage({ params, searchParams }) {
   const { videoId, id } = await params;
+  const resolvedSearchParams = await searchParams;
+  const from = resolvedSearchParams?.from;
 
   const postId = parseInt(id, 10);
   if (isNaN(postId)) {
     return notFound();
   }
+
+  const { userId } = await auth();
 
   const noteData = await prisma.post.findUnique({
     where: { post_id: postId },
@@ -24,6 +30,8 @@ export default async function VideoNotePage({ params }) {
     return notFound();
   }
 
+  const isOwner = userId === noteData.user?.clerkId;
+
   // Format date like "Mar 16, 2024"
   const formattedDate = new Intl.DateTimeFormat('en-US', {
     month: 'short',
@@ -35,15 +43,18 @@ export default async function VideoNotePage({ params }) {
     ? `${noteData.user.firstname} ${noteData.user.lastname || ''}`.trim()
     : 'Anonymous';
 
+  const backHref = from === 'discussions' ? `/video/${videoId}/discussions` : `/video/${videoId}`;
+  const backLabel = from === 'discussions' ? 'Back to Discussions' : 'Back to Video';
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex h-16 items-center">
-          <Link href={`/video/${videoId}`}>
+          <Link href={backHref}>
             <Button variant="ghost" className="flex items-center space-x-2 px-0 hover:bg-transparent hover:text-primary">
               <ArrowLeft className="h-5 w-5" />
-              <span className="font-medium text-base">Back to Video</span>
+              <span className="font-medium text-base">{backLabel}</span>
             </Button>
           </Link>
         </div>
@@ -57,6 +68,12 @@ export default async function VideoNotePage({ params }) {
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.1] text-foreground">
               {noteData.title}
             </h1>
+
+            <NoteTags
+              initialTags={noteData.tags || []}
+              noteId={noteData.post_id}
+              isOwner={isOwner}
+            />
 
             {/* Author Info Row */}
             <div className="flex items-center space-x-4 pt-4 pb-2 border-b border-border/50">

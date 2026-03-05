@@ -38,7 +38,8 @@ const getCachedNotes = unstable_cache(
             date: new Date(note.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
             upvotes: 0, // Mock upvotes until DB supports them natively
             comments: 0,
-            attachment: note.attach_file
+            attachment: note.attach_file,
+            tags: note.tags || []
         }));
     },
     ['notes-query'],
@@ -126,9 +127,57 @@ export async function GET(req) {
     try {
         const { searchParams } = new URL(req.url);
         const videoId = searchParams.get('videoId');
+        const limit = searchParams.get('limit');
 
         if (!videoId) {
             return NextResponse.json({ error: "Video ID is required" }, { status: 400 });
+        }
+
+        // Use cached version for "all" notes too (1 hour TTL)
+        if (limit === 'all') {
+            const getCachedAllNotes = unstable_cache(
+                async () => {
+                    const notes = await prisma.post.findMany({
+                        where: {
+                            category: "NOTES",
+                            del_status: false,
+                            video: {
+                                videoUrl: videoId
+                            }
+                        },
+                        include: {
+                            user: {
+                                select: {
+                                    firstname: true,
+                                    lastname: true,
+                                    profile_pic: true
+                                }
+                            }
+                        },
+                        orderBy: {
+                            created_at: 'desc'
+                        }
+                    });
+
+                    return notes.map(note => ({
+                        id: note.post_id,
+                        author: `${note.user?.firstname || 'Unknown'} ${note.user?.lastname || ''}`.trim(),
+                        publication: "Community Notes",
+                        title: note.title,
+                        subtitle: note.content || "Click to view full note details.",
+                        date: new Date(note.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                        upvotes: 0,
+                        comments: 0,
+                        attachment: note.attach_file,
+                        tags: note.tags || []
+                    }));
+                },
+                [`all-notes-${videoId}`],
+                { revalidate: 3600, tags: [`notes-${videoId}`] }
+            );
+
+            const formattedNotes = await getCachedAllNotes();
+            return NextResponse.json({ notes: formattedNotes });
         }
 
         // Use a customized unstable_cache call per video ID to ensure proper tagging
