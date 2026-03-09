@@ -13,9 +13,9 @@ const isLandingRoute = createRouteMatcher(["/", "/landing(.*)"]);
 export default clerkMiddleware(async (auth, req) => {
   const { userId } = await auth();
 
-  // protect routes
+  // protect private routes
   if (!userId && !isPublicRoute(req)) {
-    await auth.protect();
+    return NextResponse.redirect(new URL("/sign-in", req.url));
   }
 
   // redirect logged-in users away from landing
